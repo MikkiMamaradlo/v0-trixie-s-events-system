@@ -37,6 +37,8 @@ export default function PaymentsPage() {
   }, [])
 
   const loadPayments = () => {
+    if (typeof window === "undefined") return
+
     const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
     setBookings(storedBookings)
 
