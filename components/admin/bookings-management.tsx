@@ -44,11 +44,13 @@ export function BookingsManagement({ bookings, onUpdate }: BookingsManagementPro
   })
 
   const updateBookingStatus = (bookingId: number, newStatus: "pending" | "confirmed" | "cancelled") => {
-    const updatedBookings = bookings.map((booking) =>
-      booking.id === bookingId ? { ...booking, status: newStatus } : booking,
-    )
-    localStorage.setItem("bookings", JSON.stringify(updatedBookings))
-    onUpdate()
+    if (typeof window !== "undefined") {
+      const updatedBookings = bookings.map((booking) =>
+        booking.id === bookingId ? { ...booking, status: newStatus } : booking,
+      )
+      localStorage.setItem("bookings", JSON.stringify(updatedBookings))
+      onUpdate()
+    }
   }
 
   const getStatusColor = (status: string) => {

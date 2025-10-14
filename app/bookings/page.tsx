@@ -30,8 +30,10 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
 
   useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
-    setBookings(storedBookings)
+    if (typeof window !== "undefined") {
+      const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
+      setBookings(storedBookings)
+    }
   }, [])
 
   const getStatusColor = (status: string) => {

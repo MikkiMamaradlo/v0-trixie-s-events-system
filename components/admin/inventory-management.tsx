@@ -47,60 +47,62 @@ export function InventoryManagement() {
   }, [])
 
   const loadInventory = () => {
-    const storedInventory = JSON.parse(localStorage.getItem("inventory") || "[]")
-    if (storedInventory.length === 0) {
-      // Initialize with default items
-      const defaultInventory = [
-        {
-          id: 1,
-          name: 'Round Tables (60")',
-          category: "furniture",
-          quantity: 50,
-          available: 45,
-          condition: "excellent" as const,
-          lastMaintenance: "2024-01-15",
-        },
-        {
-          id: 2,
-          name: "Folding Chairs",
-          category: "furniture",
-          quantity: 200,
-          available: 180,
-          condition: "good" as const,
-          lastMaintenance: "2024-01-10",
-        },
-        {
-          id: 3,
-          name: "Sound System",
-          category: "audio",
-          quantity: 5,
-          available: 4,
-          condition: "excellent" as const,
-          lastMaintenance: "2024-02-01",
-        },
-        {
-          id: 4,
-          name: "Party Tents (20x20)",
-          category: "outdoor",
-          quantity: 10,
-          available: 8,
-          condition: "good" as const,
-          lastMaintenance: "2024-01-20",
-        },
-        {
-          id: 5,
-          name: "Chafing Dishes",
-          category: "catering",
-          quantity: 30,
-          available: 28,
-          condition: "excellent" as const,
-          lastMaintenance: "2024-02-05",
-        },
-      ]
-      localStorage.setItem("inventory", JSON.stringify(defaultInventory))
-      setInventory(defaultInventory)
-    } else {
-      setInventory(storedInventory)
+    if (typeof window !== "undefined") {
+      const storedInventory = JSON.parse(localStorage.getItem("inventory") || "[]")
+      if (storedInventory.length === 0) {
+        // Initialize with default items
+        const defaultInventory = [
+          {
+            id: 1,
+            name: 'Round Tables (60")',
+            category: "furniture",
+            quantity: 50,
+            available: 45,
+            condition: "excellent" as const,
+            lastMaintenance: "2024-01-15",
+          },
+          {
+            id: 2,
+            name: "Folding Chairs",
+            category: "furniture",
+            quantity: 200,
+            available: 180,
+            condition: "good" as const,
+            lastMaintenance: "2024-01-10",
+          },
+          {
+            id: 3,
+            name: "Sound System",
+            category: "audio",
+            quantity: 5,
+            available: 4,
+            condition: "excellent" as const,
+            lastMaintenance: "2024-02-01",
+          },
+          {
+            id: 4,
+            name: "Party Tents (20x20)",
+            category: "outdoor",
+            quantity: 10,
+            available: 8,
+            condition: "good" as const,
+            lastMaintenance: "2024-01-20",
+          },
+          {
+            id: 5,
+            name: "Chafing Dishes",
+            category: "catering",
+            quantity: 30,
+            available: 28,
+            condition: "excellent" as const,
+            lastMaintenance: "2024-02-05",
+          },
+        ]
+        localStorage.setItem("inventory", JSON.stringify(defaultInventory))
+        setInventory(defaultInventory)
+      } else {
+        setInventory(storedInventory)
+      }
     }
   }
 
@@ -124,14 +126,18 @@ export function InventoryManagement() {
       updatedInventory = [...inventory, newItem]
     }
 
-    localStorage.setItem("inventory", JSON.stringify(updatedInventory))
+    if (typeof window !== "undefined") {
+      localStorage.setItem("inventory", JSON.stringify(updatedInventory))
+    }
     setInventory(updatedInventory)
     resetForm()
   }
 
   const deleteItem = (id: number) => {
     const updatedInventory = inventory.filter((item) => item.id !== id)
-    localStorage.setItem("inventory", JSON.stringify(updatedInventory))
+    if (typeof window !== "undefined") {
+      localStorage.setItem("inventory", JSON.stringify(updatedInventory))
+    }
     setInventory(updatedInventory)
   }
 

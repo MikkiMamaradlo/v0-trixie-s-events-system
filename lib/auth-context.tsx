@@ -20,12 +20,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if user is logged in from localStorage
-    const storedAuth = localStorage.getItem("auth")
-    if (storedAuth) {
-      const authData = JSON.parse(storedAuth)
-      setIsAuthenticated(true)
-      setIsAdmin(authData.isAdmin || false)
-      setUser(authData.user || null)
+    if (typeof window !== "undefined") {
+      const storedAuth = localStorage.getItem("auth")
+      if (storedAuth) {
+        const authData = JSON.parse(storedAuth)
+        setIsAuthenticated(true)
+        setIsAdmin(authData.isAdmin || false)
+        setUser(authData.user || null)
+      }
     }
   }, [])
 
@@ -41,7 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin: false,
         user: userData,
       }
-      localStorage.setItem("auth", JSON.stringify(authData))
+      if (typeof window !== "undefined") {
+        localStorage.setItem("auth", JSON.stringify(authData))
+      }
       setIsAuthenticated(true)
       setIsAdmin(false)
       setUser(userData)
@@ -57,7 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin: true,
         user: { name: "Admin", email: "admin@trixtech.com" },
       }
-      localStorage.setItem("auth", JSON.stringify(authData))
+      if (typeof window !== "undefined") {
+        localStorage.setItem("auth", JSON.stringify(authData))
+      }
       setIsAuthenticated(true)
       setIsAdmin(true)
       setUser({ name: "Admin", email: "admin@trixtech.com" })
@@ -67,7 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem("auth")
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth")
+    }
     setIsAuthenticated(false)
     setIsAdmin(false)
     setUser(null)

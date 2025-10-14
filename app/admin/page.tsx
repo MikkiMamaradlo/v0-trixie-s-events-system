@@ -41,19 +41,21 @@ export default function AdminDashboard() {
   }, [])
 
   const loadBookings = () => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
-    setBookings(storedBookings)
+    if (typeof window !== "undefined") {
+      const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
+      setBookings(storedBookings)
 
-    // Calculate stats
-    const pending = storedBookings.filter((b: Booking) => b.status === "pending").length
-    const confirmed = storedBookings.filter((b: Booking) => b.status === "confirmed").length
+      // Calculate stats
+      const pending = storedBookings.filter((b: Booking) => b.status === "pending").length
+      const confirmed = storedBookings.filter((b: Booking) => b.status === "confirmed").length
 
-    setStats({
-      totalBookings: storedBookings.length,
-      pendingBookings: pending,
-      confirmedBookings: confirmed,
-      totalRevenue: confirmed * 500, // Mock calculation
-    })
+      setStats({
+        totalBookings: storedBookings.length,
+        pendingBookings: pending,
+        confirmedBookings: confirmed,
+        totalRevenue: confirmed * 500, // Mock calculation
+      })
+    }
   }
 
   if (!isAdmin) {

@@ -157,8 +157,10 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
       createdAt: new Date().toISOString(),
     }
 
-    const existingBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
-    localStorage.setItem("bookings", JSON.stringify([...existingBookings, booking]))
+    if (typeof window !== "undefined") {
+      const existingBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
+      localStorage.setItem("bookings", JSON.stringify([...existingBookings, booking]))
+    }
 
     router.push("/bookings?success=true")
   }
