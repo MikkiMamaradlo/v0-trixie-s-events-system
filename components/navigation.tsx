@@ -58,17 +58,32 @@ export function Navigation() {
               >
                 Services
               </Link>
-              <Link
-                href="/bookings"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === "/bookings"
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                )}
-              >
-                My Bookings
-              </Link>
+              {isAuthenticated && !isAdmin && (
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === "/dashboard"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Dashboard
+                </Link>
+              )}
+              {isAuthenticated && !isAdmin && (
+                <Link
+                  href="/bookings"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === "/bookings"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  My Bookings
+                </Link>
+              )}
 
               <Button asChild size="sm">
                 <Link href="/admin">Admin Login</Link>
@@ -109,17 +124,32 @@ export function Navigation() {
             >
               Services
             </Link>
-            <Link
-              href="/bookings"
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === "/bookings"
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              My Bookings
-            </Link>
+            {isAuthenticated && !isAdmin && (
+              <Link
+                href="/dashboard"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/dashboard"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                Dashboard
+              </Link>
+            )}
+            {isAuthenticated && !isAdmin && (
+              <Link
+                href="/bookings"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/bookings"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                My Bookings
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <DropdownMenu>
@@ -154,8 +184,8 @@ export function Navigation() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild size="sm">
-                <Link href="/admin">Admin Login</Link>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/signup">Sign Up</Link>
               </Button>
             )}
           </div>

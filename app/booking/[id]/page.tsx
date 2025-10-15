@@ -1,20 +1,36 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, use } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon, Clock, Users, DollarSign, ArrowLeft } from "lucide-react"
-import { format } from "date-fns"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
+import { useState, use } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  CalendarIcon,
+  Clock,
+  Users,
+  DollarSign,
+  ArrowLeft,
+} from "lucide-react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const services = [
   {
@@ -98,23 +114,33 @@ const services = [
     duration: "2 hours",
     capacity: "Per person",
   },
-]
+];
 
-export default function BookingPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params)
-  const router = useRouter()
-  const serviceId = Number.parseInt(resolvedParams.id)
-  const service = services.find((s) => s.id === serviceId)
+export default function BookingPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = use(params);
+  const router = useRouter();
+  const serviceId = Number.parseInt(resolvedParams.id);
+  const service = services.find((s) => s.id === serviceId);
 
-  const [date, setDate] = useState<Date>()
+  const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     guests: "",
     notes: "",
-  })
-  const [step, setStep] = useState<"details" | "payment">("details")
+  });
+  const [cardData, setCardData] = useState({
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  });
+  const [step, setStep] = useState<"details" | "payment">("details");
 
   if (!service) {
     return (
@@ -122,7 +148,9 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
         <Card className="max-w-md">
           <CardHeader>
             <CardTitle>Service Not Found</CardTitle>
-            <CardDescription>The requested service could not be found.</CardDescription>
+            <CardDescription>
+              The requested service could not be found.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild>
@@ -131,18 +159,18 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   const calculateTotal = () => {
     if (service.category === "catering" && formData.guests) {
-      return service.price * Number.parseInt(formData.guests)
+      return service.price * Number.parseInt(formData.guests);
     }
-    return service.price
-  }
+    return service.price;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Store booking in localStorage
     const booking = {
@@ -155,27 +183,41 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
       totalAmount: calculateTotal(),
       paymentStatus: "paid",
       createdAt: new Date().toISOString(),
-    }
+    };
 
     if (typeof window !== "undefined") {
-      const existingBookings = JSON.parse(localStorage.getItem("bookings") || "[]")
-      localStorage.setItem("bookings", JSON.stringify([...existingBookings, booking]))
+      const existingBookings = JSON.parse(
+        localStorage.getItem("bookings") || "[]"
+      );
+      localStorage.setItem(
+        "bookings",
+        JSON.stringify([...existingBookings, booking])
+      );
     }
 
-    router.push("/bookings?success=true")
-  }
+    router.push("/bookings?success=true");
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
+
+  const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCardData({
+      ...cardData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const proceedToPayment = (e: React.FormEvent) => {
-    e.preventDefault()
-    setStep("payment")
-  }
+    e.preventDefault();
+    setStep("payment");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -198,7 +240,9 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
               <div className="flex items-center gap-3 text-lg">
                 <DollarSign className="h-5 w-5 text-muted-foreground" />
                 <span className="font-semibold">${service.price}</span>
-                {service.category === "catering" && <span className="text-muted-foreground">per person</span>}
+                {service.category === "catering" && (
+                  <span className="text-muted-foreground">per person</span>
+                )}
               </div>
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-muted-foreground" />
@@ -223,7 +267,9 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
             <Card>
               <CardHeader>
                 <CardTitle>Book This Service</CardTitle>
-                <CardDescription>Fill in your details to reserve this service</CardDescription>
+                <CardDescription>
+                  Fill in your details to reserve this service
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={proceedToPayment} className="space-y-4">
@@ -284,10 +330,17 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : <span>Pick a date</span>}
+                          {date ? (
+                            format(date, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -314,7 +367,12 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg" disabled={!date}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    size="lg"
+                    disabled={!date}
+                  >
                     Proceed to Payment
                   </Button>
                 </form>
@@ -324,7 +382,9 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
             <Card>
               <CardHeader>
                 <CardTitle>Payment Details</CardTitle>
-                <CardDescription>Complete your booking with secure payment</CardDescription>
+                <CardDescription>
+                  Complete your booking with secure payment
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -335,7 +395,9 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Date:</span>
-                      <span className="font-medium">{date ? format(date, "PPP") : "Not set"}</span>
+                      <span className="font-medium">
+                        {date ? format(date, "PPP") : "Not set"}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Guests:</span>
@@ -349,22 +411,50 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
                   <div className="space-y-2">
                     <Label htmlFor="cardName">Cardholder Name</Label>
-                    <Input id="cardName" placeholder="John Doe" required />
+                    <Input
+                      id="cardName"
+                      name="cardName"
+                      value={cardData.cardName}
+                      onChange={handleCardInputChange}
+                      placeholder="John Doe"
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input id="cardNumber" placeholder="1234 5678 9012 3456" required />
+                    <Input
+                      id="cardNumber"
+                      name="cardNumber"
+                      value={cardData.cardNumber}
+                      onChange={handleCardInputChange}
+                      placeholder="1234 5678 9012 3456"
+                      required
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input id="expiry" placeholder="MM/YY" required />
+                      <Input
+                        id="expiry"
+                        name="expiry"
+                        value={cardData.expiry}
+                        onChange={handleCardInputChange}
+                        placeholder="MM/YY"
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="cvv">CVV</Label>
-                      <Input id="cvv" placeholder="123" required />
+                      <Input
+                        id="cvv"
+                        name="cvv"
+                        value={cardData.cvv}
+                        onChange={handleCardInputChange}
+                        placeholder="123"
+                        required
+                      />
                     </div>
                   </div>
 
@@ -392,5 +482,5 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
         </div>
       </div>
     </div>
-  )
+  );
 }
