@@ -1,13 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { useSearchParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calendar, Package, Utensils, Clock, Users, DollarSign } from "lucide-react"
-import Link from "next/link"
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Calendar,
+  Package,
+  Utensils,
+  Clock,
+  Users,
+  DollarSign,
+} from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 const services = [
   {
@@ -19,7 +34,12 @@ const services = [
     duration: "8 hours",
     capacity: "Up to 200 guests",
     image: "/elegant-party-planning-setup.jpg",
-    features: ["Event coordination", "Vendor management", "Timeline creation", "Day-of coordination"],
+    features: [
+      "Event coordination",
+      "Vendor management",
+      "Timeline creation",
+      "Day-of coordination",
+    ],
   },
   {
     id: 2,
@@ -30,7 +50,12 @@ const services = [
     duration: "4 hours",
     capacity: "Up to 50 guests",
     image: "/birthday-party.png",
-    features: ["Theme design", "Decoration setup", "Activity planning", "Party coordination"],
+    features: [
+      "Theme design",
+      "Decoration setup",
+      "Activity planning",
+      "Party coordination",
+    ],
   },
   {
     id: 3,
@@ -41,7 +66,12 @@ const services = [
     duration: "Full day",
     capacity: "Up to 300 guests",
     image: "/elegant-wedding-setup.jpg",
-    features: ["Venue selection", "Vendor coordination", "Design consultation", "Full-day coordination"],
+    features: [
+      "Venue selection",
+      "Vendor coordination",
+      "Design consultation",
+      "Full-day coordination",
+    ],
   },
   {
     id: 4,
@@ -52,7 +82,12 @@ const services = [
     duration: "24 hours",
     capacity: "10 seats per set",
     image: "/elegant-table-and-chairs-setup.jpg",
-    features: ["Round tables", "Chair covers", "Table linens", "Setup included"],
+    features: [
+      "Round tables",
+      "Chair covers",
+      "Table linens",
+      "Setup included",
+    ],
   },
   {
     id: 5,
@@ -74,7 +109,12 @@ const services = [
     duration: "48 hours",
     capacity: "Up to 100 guests",
     image: "/white-party-tent-outdoor.jpg",
-    features: ["Weather protection", "Setup & takedown", "Lighting", "Flooring options"],
+    features: [
+      "Weather protection",
+      "Setup & takedown",
+      "Lighting",
+      "Flooring options",
+    ],
   },
   {
     id: 7,
@@ -96,7 +136,12 @@ const services = [
     duration: "4 hours",
     capacity: "Per person",
     image: "/elegant-plated-dinner-service.jpg",
-    features: ["3-course meal", "Professional servers", "Fine dining setup", "Custom menu"],
+    features: [
+      "3-course meal",
+      "Professional servers",
+      "Fine dining setup",
+      "Custom menu",
+    ],
   },
   {
     id: 9,
@@ -107,19 +152,38 @@ const services = [
     duration: "2 hours",
     capacity: "Per person",
     image: "/cocktail-reception-appetizers.jpg",
-    features: ["Passed appetizers", "Signature cocktails", "Bar service", "Setup included"],
+    features: [
+      "Passed appetizers",
+      "Signature cocktails",
+      "Bar service",
+      "Setup included",
+    ],
   },
-]
+];
 
 export default function ServicesPage() {
-  const searchParams = useSearchParams()
-  const categoryParam = searchParams.get("category")
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam || "all")
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const categoryParam = searchParams.get("category");
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryParam || "all"
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, router]);
 
   const filteredServices = useMemo(() => {
-    if (selectedCategory === "all") return services
-    return services.filter((service) => service.category === selectedCategory)
-  }, [selectedCategory])
+    if (selectedCategory === "all") return services;
+    return services.filter((service) => service.category === selectedCategory);
+  }, [selectedCategory]);
+
+  if (!isAuthenticated) {
+    return null; // Will redirect
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,7 +195,11 @@ export default function ServicesPage() {
           </p>
         </div>
 
-        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
+        <Tabs
+          value={selectedCategory}
+          onValueChange={setSelectedCategory}
+          className="mb-8"
+        >
           <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="all">All Services</TabsTrigger>
             <TabsTrigger value="party-planning">Planning</TabsTrigger>
@@ -154,17 +222,27 @@ export default function ServicesPage() {
                 <div className="flex items-start justify-between mb-2">
                   <CardTitle className="text-xl">{service.name}</CardTitle>
                   <Badge variant="secondary">
-                    {service.category === "party-planning" && <Calendar className="h-3 w-3 mr-1" />}
-                    {service.category === "equipment-rental" && <Package className="h-3 w-3 mr-1" />}
-                    {service.category === "catering" && <Utensils className="h-3 w-3 mr-1" />}
+                    {service.category === "party-planning" && (
+                      <Calendar className="h-3 w-3 mr-1" />
+                    )}
+                    {service.category === "equipment-rental" && (
+                      <Package className="h-3 w-3 mr-1" />
+                    )}
+                    {service.category === "catering" && (
+                      <Utensils className="h-3 w-3 mr-1" />
+                    )}
                   </Badge>
                 </div>
-                <CardDescription className="mb-4">{service.description}</CardDescription>
+                <CardDescription className="mb-4">
+                  {service.description}
+                </CardDescription>
 
                 <div className="space-y-2 text-sm text-muted-foreground mb-4">
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
-                    <span className="font-semibold text-foreground">${service.price}</span>
+                    <span className="font-semibold text-foreground">
+                      ${service.price}
+                    </span>
                     {service.category === "catering" && <span>per person</span>}
                   </div>
                   <div className="flex items-center gap-2">
@@ -179,7 +257,10 @@ export default function ServicesPage() {
 
                 <div className="space-y-1">
                   {service.features.map((feature, index) => (
-                    <div key={index} className="text-sm flex items-center gap-2">
+                    <div
+                      key={index}
+                      className="text-sm flex items-center gap-2"
+                    >
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                       <span>{feature}</span>
                     </div>
@@ -196,5 +277,5 @@ export default function ServicesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

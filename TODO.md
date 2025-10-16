@@ -6,7 +6,8 @@
 - [x] Create app/signup/page.tsx with sign-up form (name, email, password, confirm password, validation)
 - [x] Update app/login/page.tsx to add "Don't have an account? Sign up" link
 - [x] Update components/navigation.tsx to add "Sign Up" button for unauthenticated users
-- [x] Test sign-up flow: form validation, successful registration, redirect to /bookings, verify localStorage
+- [x] Fix homepage to show appropriate buttons based on authentication status
+- [ ] Test sign-up flow: form validation, successful registration, redirect to /services, verify localStorage
 
 ## Completed Tasks
 

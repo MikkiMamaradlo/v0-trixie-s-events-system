@@ -35,7 +35,7 @@ export default function LoginPage() {
     const success = await login(email, password);
 
     if (success) {
-      router.push("/bookings");
+      router.push("/services");
     } else {
       setError("Invalid credentials. Please try again.");
       setIsLoading(false);
@@ -97,6 +97,12 @@ export default function LoginPage() {
                 Don't have an account?{" "}
                 <Link href="/signup" className="text-primary hover:underline">
                   Sign up
+                </Link>
+              </p>
+              <p className="mt-2">
+                Need admin access?{" "}
+                <Link href="/admin" className="text-primary hover:underline">
+                  Admin Login
                 </Link>
               </p>
             </div>

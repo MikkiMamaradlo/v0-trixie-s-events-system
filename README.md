@@ -1,150 +1,121 @@
-# TRIXTECH - Booking and Reservation System
+# TRIXTECH Event Booking System
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/mikkis-projects-3a0ed22d/v0-trixie-s-events-system)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/7W4uNJhUAVt)
-
-## Overview
-
-A comprehensive booking and reservation system for **Trixie's Events, Supplies, and Services** - featuring party planning, equipment rental, and catering services. Built with Next.js 15, React 19, TypeScript, and Tailwind CSS.
+A comprehensive event planning and booking system built with Next.js, featuring separate customer and admin interfaces.
 
 ## Features
 
-### Customer Portal
-- 🎉 **Browse Services** - Party planning, equipment rental, and catering options
-- 📅 **Book Services** - Easy booking flow with date selection
-- 💳 **Payment Processing** - Mock payment interface with card details
-- 📋 **Booking Management** - View and track all your bookings
+### Customer Portal (Port 3000)
 
-### Admin Dashboard
-- 📊 **Dashboard Overview** - Statistics and revenue tracking
-- 🎫 **Bookings Management** - View and update booking statuses
-- 📦 **Inventory Management** - Full CRUD operations for equipment and supplies
-- 📆 **Calendar View** - Visual calendar of all bookings
-- 💰 **Payment Management** - Track revenue and payment transactions
+- Event browsing and booking
+- User registration and authentication
+- Dashboard for managing bookings
+- Service selection (Party Planning, Equipment Rental, Catering)
 
-## Quick Start
+### Admin Portal (Port 3001)
+
+- Comprehensive admin dashboard
+- User management
+- Booking management
+- Inventory management
+- Reports and analytics
+- Calendar view
+
+## Getting Started
 
 ### Prerequisites
-- Node.js 18 or higher
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
-1. **Clone the repository**
-   \`\`\`bash
-   git clone https://github.com/MikkiMamaradlo/v0-trixie-s-events-system.git
-   cd v0-trixie-s-events-system
-   \`\`\`
-
-2. **Install dependencies**
-   \`\`\`bash
+1. Clone the repository
+2. Install dependencies:
+   ```bash
    npm install
-   \`\`\`
+   ```
 
-3. **Run the development server**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+### Running the Application
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+#### Development Mode
 
-## Default Credentials
+**Customer Portal:**
 
-### Admin Access
-- **Password**: `admin123`
-- Access at: `/admin`
+```bash
+npm run dev:customer
+```
 
-### Customer Login
-- Any email/password combination works for demo purposes
+Access at: http://localhost:3000
 
-## Tech Stack
+**Admin Portal:**
 
-- **Framework**: Next.js 15 (App Router)
-- **UI Library**: React 19
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Components**: shadcn/ui (Radix UI)
-- **Icons**: Lucide React
-- **Date Handling**: date-fns
-- **Forms**: React Hook Form
-- **State Management**: React Context API
-- **Data Storage**: localStorage (demo mode)
+```bash
+npm run dev:admin
+```
+
+Access at: http://localhost:3001
+
+#### Production Mode
+
+**Customer Portal:**
+
+```bash
+npm run build
+npm run start:customer
+```
+
+**Admin Portal:**
+
+```bash
+npm run build
+npm run start:admin
+```
+
+### Default Credentials
+
+**Admin Login:**
+
+- URL: http://localhost:3001/admin
+- Password: admin123
+
+**Customer Login:**
+
+- URL: http://localhost:3000/login
+- Create new account via signup or use demo credentials
 
 ## Project Structure
 
-\`\`\`
+```
 ├── app/                    # Next.js app directory
-│   ├── admin/             # Admin dashboard
+│   ├── admin/             # Admin pages
 │   ├── booking/           # Booking pages
-│   ├── bookings/          # User bookings
-│   ├── login/             # Authentication
-│   ├── services/          # Services catalog
-│   └── page.tsx           # Homepage
-├── components/            # React components
-│   ├── admin/            # Admin components
-│   ├── ui/               # UI components (shadcn)
-│   └── navigation.tsx    # Navigation bar
-├── lib/                   # Utilities
-│   ├── auth-context.tsx  # Auth context
-│   └── utils.ts          # Helper functions
+│   ├── dashboard/         # Customer dashboard
+│   ├── login/             # Login page
+│   ├── signup/            # Signup page
+│   └── services/          # Services page
+├── components/            # Reusable components
+│   ├── admin/            # Admin-specific components
+│   └── ui/               # UI components
+├── lib/                  # Utilities and context
 └── public/               # Static assets
-\`\`\`
+```
 
-## Available Scripts
+## Technologies Used
 
-\`\`\`bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
-\`\`\`
+- **Framework:** Next.js 15
+- **UI:** Radix UI + Tailwind CSS
+- **State Management:** React Context
+- **Charts:** Recharts
+- **Forms:** React Hook Form + Zod
+- **Icons:** Lucide React
 
-## Documentation
+## Development Notes
 
-- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup instructions
-- **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** - Complete file structure and architecture
-
-## Deployment
-
-Your project is live at:
-**[https://vercel.com/mikkis-projects-3a0ed22d/v0-trixie-s-events-system](https://vercel.com/mikkis-projects-3a0ed22d/v0-trixie-s-events-system)**
-
-### Deploy Your Own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/MikkiMamaradlo/v0-trixie-s-events-system)
-
-## Future Enhancements
-
-- [ ] Database integration (Supabase/Neon)
-- [ ] Real authentication system
-- [ ] Stripe payment integration
-- [ ] Email notifications
-- [ ] File upload support
-- [ ] Advanced reporting and analytics
-- [ ] Mobile app (React Native/Flutter)
-
-## Contributing
-
-This repository is automatically synced with [v0.app](https://v0.app). To make changes:
-
-1. Continue building on [v0.app/chat/projects/7W4uNJhUAVt](https://v0.app/chat/projects/7W4uNJhUAVt)
-2. Deploy your changes from v0
-3. Changes will automatically sync to this repository
+- Customer and admin interfaces run on separate ports to avoid interference
+- Data is stored in localStorage for demo purposes
+- Authentication is mock-based for demonstration
+- Admin password: `admin123`
 
 ## License
 
-MIT License - feel free to use this project for your own purposes.
-
-## Support
-
-For issues or questions:
-- Check the [SETUP_GUIDE.md](./SETUP_GUIDE.md) for troubleshooting
-- Open an issue on GitHub
-- Contact the development team
-
----
-
-**Built with ❤️ using [v0.app](https://v0.app)**
+This project is for demonstration purposes.

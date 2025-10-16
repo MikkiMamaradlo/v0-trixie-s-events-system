@@ -37,7 +37,7 @@ export default function SignupPage() {
     const result = await signup(name, email, password, confirmPassword);
 
     if (result.success) {
-      router.push("/bookings");
+      router.push("/services");
     } else {
       setError(result.error || "An error occurred during signup");
       setIsLoading(false);

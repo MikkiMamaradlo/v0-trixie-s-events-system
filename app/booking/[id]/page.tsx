@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +31,7 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
 
 const services = [
   {
@@ -123,8 +124,15 @@ export default function BookingPage({
 }) {
   const resolvedParams = use(params);
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const serviceId = Number.parseInt(resolvedParams.id);
   const service = services.find((s) => s.id === serviceId);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, router]);
 
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
@@ -141,6 +149,10 @@ export default function BookingPage({
     cvv: "",
   });
   const [step, setStep] = useState<"details" | "payment">("details");
+
+  if (!isAuthenticated) {
+    return null; // Will redirect
+  }
 
   if (!service) {
     return (

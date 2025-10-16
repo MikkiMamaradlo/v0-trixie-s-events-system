@@ -27,8 +27,13 @@ export function Navigation() {
     setIsClient(true);
   }, []);
 
+  // On admin login page, show login/signup buttons instead of user account
+  // Only apply this logic on client-side to avoid hydration mismatch
+  const showUserMenu =
+    isClient && isAuthenticated && !(pathname === "/admin" && !isAdmin);
+
   if (!isClient) {
-    // Server-side render: show login link
+    // Server-side render: show static navigation without auth-dependent content
     return (
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -58,36 +63,15 @@ export function Navigation() {
               >
                 Services
               </Link>
-              {isAuthenticated && !isAdmin && (
-                <Link
-                  href="/dashboard"
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === "/dashboard"
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  Dashboard
-                </Link>
-              )}
-              {isAuthenticated && !isAdmin && (
-                <Link
-                  href="/bookings"
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === "/bookings"
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  My Bookings
-                </Link>
-              )}
 
-              <Button asChild size="sm">
-                <Link href="/admin">Admin Login</Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -151,7 +135,7 @@ export function Navigation() {
               </Link>
             )}
 
-            {isAuthenticated ? (
+            {showUserMenu ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -184,9 +168,14 @@ export function Navigation() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild variant="outline" size="sm">
-                <Link href="/signup">Sign Up</Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </div>
             )}
           </div>
         </div>
