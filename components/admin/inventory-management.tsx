@@ -347,6 +347,45 @@ export function InventoryManagement() {
             </DialogContent>
           </Dialog>
         </div>
+
+        {/* Inventory Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {inventory.length}
+            </div>
+            <div className="text-sm text-blue-600 dark:text-blue-400">
+              Total Products
+            </div>
+          </div>
+          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {inventory.reduce((sum, item) => sum + item.quantity, 0)}
+            </div>
+            <div className="text-sm text-green-600 dark:text-green-400">
+              Total Items
+            </div>
+          </div>
+          <div className="bg-orange-50 dark:bg-orange-950/20 p-4 rounded-lg">
+            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+              {inventory.reduce((sum, item) => sum + item.available, 0)}
+            </div>
+            <div className="text-sm text-orange-600 dark:text-orange-400">
+              Available Items
+            </div>
+          </div>
+          <div className="bg-red-50 dark:bg-red-950/20 p-4 rounded-lg">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              {inventory.reduce(
+                (sum, item) => sum + (item.quantity - item.available),
+                0
+              )}
+            </div>
+            <div className="text-sm text-red-600 dark:text-red-400">
+              Items In Use
+            </div>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

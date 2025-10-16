@@ -265,97 +265,113 @@ export default function AdminDashboard() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
-          <Card>
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-green-900 dark:text-green-100">
                 Total Revenue
               </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                 ₱{stats.totalRevenue.toLocaleString()}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Total Bookings
               </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold">{stats.totalBookings}</div>
+              <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                {stats.totalBookings}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-yellow-900 dark:text-yellow-100">
+                Pending
+              </CardTitle>
+              <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-yellow-600">
+              <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-100">
                 {stats.pendingBookings}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-emerald-900 dark:text-emerald-100">
+                Confirmed
+              </CardTitle>
+              <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
                 {stats.confirmedBookings}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">This Month</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                This Month
+              </CardTitle>
+              <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                 ₱{stats.thisMonthRevenue.toLocaleString()}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-red-900 dark:text-red-100">
+                Low Stock
+              </CardTitle>
+              <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-2xl font-bold text-red-900 dark:text-red-100">
                 {stats.lowStockItems}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-indigo-900 border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Users</CardTitle>
-              <UserCheck className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-indigo-900 dark:text-indigo-100">
+                Users
+              </CardTitle>
+              <UserCheck className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold">{stats.totalUsers}</div>
+              <div className="text-2xl font-bold text-indigo-900 dark:text-indigo-100">
+                {stats.totalUsers}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 border-gray-200 dark:border-gray-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                Cancelled
+              </CardTitle>
+              <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {stats.cancelledBookings}
               </div>
             </CardContent>
@@ -366,7 +382,7 @@ export default function AdminDashboard() {
         <div className="space-y-6">
           {activeTab === "overview" && (
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card>
+              <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle>Recent Activity</CardTitle>
                   <CardDescription>Latest bookings and updates</CardDescription>
@@ -376,7 +392,7 @@ export default function AdminDashboard() {
                     {bookings.slice(0, 5).map((booking) => (
                       <div
                         key={booking.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
+                        className="flex items-center justify-between p-3 border rounded-lg hover:shadow-md transition-all duration-200 hover:border-primary/20 bg-gradient-to-r from-background to-muted/20"
                       >
                         <div>
                           <p className="font-medium">{booking.service}</p>
@@ -385,13 +401,13 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                         <Badge
-                          className={
+                          className={`${
                             booking.status === "confirmed"
                               ? "bg-green-500/10 text-green-700"
                               : booking.status === "pending"
                               ? "bg-yellow-500/10 text-yellow-700"
                               : "bg-red-500/10 text-red-700"
-                          }
+                          } hover:scale-105 transition-transform duration-200`}
                         >
                           {booking.status}
                         </Badge>
@@ -423,28 +439,12 @@ export default function AdminDashboard() {
                   <Button
                     className="w-full justify-start"
                     variant="outline"
-                    onClick={() => setActiveTab("inventory")}
-                  >
-                    <Package className="h-4 w-4 mr-2" />
-                    Update Inventory
-                  </Button>
-                  <Button
-                    className="w-full justify-start"
-                    variant="outline"
                     asChild
                   >
                     <Link href="/admin/payments">
                       <DollarSign className="h-4 w-4 mr-2" />
                       View Payments
                     </Link>
-                  </Button>
-                  <Button
-                    className="w-full justify-start"
-                    variant="outline"
-                    onClick={() => setActiveTab("users")}
-                  >
-                    <Users className="h-4 w-4 mr-2" />
-                    Manage Users
                   </Button>
                   <Button
                     className="w-full justify-start"

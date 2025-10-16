@@ -251,7 +251,7 @@ export default function BookingPage({
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3 text-lg">
                 <DollarSign className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold">${service.price}</span>
+                <span className="font-semibold">₱{service.price}</span>
                 {service.category === "catering" && (
                   <span className="text-muted-foreground">per person</span>
                 )}
@@ -417,7 +417,7 @@ export default function BookingPage({
                     </div>
                     <div className="flex justify-between text-lg font-semibold pt-2 border-t">
                       <span>Total Amount:</span>
-                      <span className="text-primary">${calculateTotal()}</span>
+                      <span className="text-primary">₱{calculateTotal()}</span>
                     </div>
                   </div>
 

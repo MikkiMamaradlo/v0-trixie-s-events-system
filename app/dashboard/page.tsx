@@ -37,6 +37,7 @@ interface Booking {
   status: "pending" | "confirmed" | "cancelled";
   createdAt: string;
   totalAmount?: number;
+  paymentStatus?: string;
 }
 
 export default function CustomerDashboard() {
@@ -121,44 +122,52 @@ export default function CustomerDashboard() {
 
         {/* Stats Overview */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Total Bookings
               </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalBookings}</div>
-              <p className="text-xs text-muted-foreground mt-1">All time</p>
+              <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">
+                {stats.totalBookings}
+              </div>
+              <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                All time
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-green-900 dark:text-green-100">
                 Upcoming Events
               </CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Clock className="h-4 w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.upcomingBookings}</div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <div className="text-3xl font-bold text-green-900 dark:text-green-100">
+                {stats.upcomingBookings}
+              </div>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-1">
                 Confirmed bookings
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                Total Spent
+              </CardTitle>
+              <Package className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">
                 ₱{stats.totalSpent.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
                 Across all bookings
               </p>
             </CardContent>
@@ -166,11 +175,11 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="group hover:shadow-lg transition-shadow">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card className="group hover:shadow-lg transition-all duration-300 transform hover:scale-105 border-2 hover:border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
+                <Package className="h-5 w-5 text-primary" />
                 Book Services
               </CardTitle>
               <CardDescription>
@@ -178,16 +187,19 @@ export default function CustomerDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full">
+              <Button
+                asChild
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+              >
                 <Link href="/services">Browse Services</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-lg transition-shadow">
+          <Card className="group hover:shadow-lg transition-all duration-300 transform hover:scale-105 border-2 hover:border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-5 w-5 text-primary" />
                 View Bookings
               </CardTitle>
               <CardDescription>
@@ -195,34 +207,19 @@ export default function CustomerDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild variant="outline" className="w-full">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-primary/20 hover:bg-primary/5 hover:border-primary/40"
+              >
                 <Link href="/bookings">My Bookings</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="group hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Utensils className="h-5 w-5" />
-                Plan Event
-              </CardTitle>
-              <CardDescription>
-                Get help planning your next event
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild variant="outline" className="w-full">
-                <Link href="/services?category=party-planning">
-                  Event Planning
-                </Link>
               </Button>
             </CardContent>
           </Card>
         </div>
 
         {/* Recent Bookings */}
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300">
           <CardHeader>
             <CardTitle>Recent Bookings</CardTitle>
             <CardDescription>
@@ -237,7 +234,10 @@ export default function CustomerDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Start by browsing our services and making your first booking.
                 </p>
-                <Button asChild>
+                <Button
+                  asChild
+                  className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                >
                   <Link href="/services">Browse Services</Link>
                 </Button>
               </div>
@@ -246,7 +246,7 @@ export default function CustomerDashboard() {
                 {bookings.slice(0, 5).map((booking) => (
                   <div
                     key={booking.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-all duration-200 hover:border-primary/20 bg-gradient-to-r from-background to-muted/20"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-primary/10 p-2 rounded-lg">
@@ -275,7 +275,11 @@ export default function CustomerDashboard() {
                         </p>
                       </div>
                     </div>
-                    <Badge className={getStatusColor(booking.status)}>
+                    <Badge
+                      className={`${getStatusColor(
+                        booking.status
+                      )} hover:scale-105 transition-transform duration-200`}
+                    >
                       {booking.status.charAt(0).toUpperCase() +
                         booking.status.slice(1)}
                     </Badge>
@@ -283,7 +287,11 @@ export default function CustomerDashboard() {
                 ))}
                 {bookings.length > 5 && (
                   <div className="text-center pt-4">
-                    <Button asChild variant="outline">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="border-primary/20 hover:bg-primary/5 hover:border-primary/40"
+                    >
                       <Link href="/bookings">View All Bookings</Link>
                     </Button>
                   </div>

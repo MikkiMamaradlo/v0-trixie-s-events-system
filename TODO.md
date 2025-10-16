@@ -1,13 +1,16 @@
-# TODO: Add Sign-Up Functionality to TRIXTECH Event Booking System
+# TODO: Enhance UI and Fix Transaction Issues in TRIXTECH Event Booking System
 
 ## Pending Tasks
 
-- [x] Add signup method to lib/auth-context.tsx
-- [x] Create app/signup/page.tsx with sign-up form (name, email, password, confirm password, validation)
-- [x] Update app/login/page.tsx to add "Don't have an account? Sign up" link
-- [x] Update components/navigation.tsx to add "Sign Up" button for unauthenticated users
-- [x] Fix homepage to show appropriate buttons based on authentication status
-- [ ] Test sign-up flow: form validation, successful registration, redirect to /services, verify localStorage
+- [x] Fix currency symbol in booking page from $ to ₱
+- [x] Update Booking interface in customer pages to include totalAmount and paymentStatus
+- [x] Verify admin pages properly display completed transactions
+- [x] Test booking flow end-to-end to ensure transactions appear in admin
+- [x] Update admin booking management to set paymentStatus to "paid" when confirming bookings
+- [x] Remove unnecessary buttons from customer and admin systems
+- [ ] Enhance customer dashboard UI for better presentation
+- [ ] Enhance admin dashboard UI for better presentation
+- [ ] Improve overall responsiveness and styling
 
 ## Completed Tasks
 

@@ -169,11 +169,8 @@ export function Navigation() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/login">Login</Link>
-                </Button>
                 <Button asChild size="sm">
-                  <Link href="/signup">Sign Up</Link>
+                  <Link href="/login">Login</Link>
                 </Button>
               </div>
             )}

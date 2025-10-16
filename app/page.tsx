@@ -145,21 +145,11 @@ export default function HomePage() {
                   </Link>
                 </Button>
               ) : (
-                <>
-                  <Button asChild size="lg" className="text-lg">
-                    <Link href="/login">
-                      Get Started <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="text-lg bg-transparent"
-                  >
-                    <Link href="/login">Sign In</Link>
-                  </Button>
-                </>
+                <Button asChild size="lg" className="text-lg">
+                  <Link href="/login">
+                    Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
               )}
             </div>
           </div>
