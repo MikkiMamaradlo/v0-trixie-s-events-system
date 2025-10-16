@@ -181,6 +181,30 @@ export default function ServicesPage() {
     return services.filter((service) => service.category === selectedCategory);
   }, [selectedCategory]);
 
+  // Prevent hydration mismatch by not rendering auth-dependent content until client-side
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-12">
+          <div className="mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Our Services
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Browse our comprehensive range of event services and equipment
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return null; // Will redirect
   }
@@ -241,7 +265,7 @@ export default function ServicesPage() {
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
                     <span className="font-semibold text-foreground">
-                      ${service.price}
+                      ₱{service.price.toLocaleString()}
                     </span>
                     {service.category === "catering" && <span>per person</span>}
                   </div>

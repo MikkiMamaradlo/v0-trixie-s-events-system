@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -240,7 +240,7 @@ export function ReportsAnalytics({ bookings }: ReportsAnalyticsProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${analytics.totalRevenue.toLocaleString()}
+              ₱{analytics.totalRevenue.toLocaleString()}
             </div>
             <div className="flex items-center text-xs text-muted-foreground mt-1">
               {revenueChange >= 0 ? (
@@ -296,7 +296,7 @@ export function ReportsAnalytics({ bookings }: ReportsAnalyticsProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${analytics.averageBookingValue.toFixed(0)}
+              ₱{analytics.averageBookingValue.toFixed(0)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Per booking</p>
           </CardContent>
@@ -429,7 +429,7 @@ export function ReportsAnalytics({ bookings }: ReportsAnalyticsProps) {
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">
-                          ${month.revenue.toLocaleString()}
+                          ₱{month.revenue.toLocaleString()}
                         </div>
                       </div>
                     </div>
@@ -505,7 +505,7 @@ export function ReportsAnalytics({ bookings }: ReportsAnalyticsProps) {
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">{month.month}</span>
-                        <span>${month.revenue.toLocaleString()}</span>
+                        <span>₱{month.revenue.toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
                         <div

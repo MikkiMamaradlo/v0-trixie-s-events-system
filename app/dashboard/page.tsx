@@ -156,7 +156,7 @@ export default function CustomerDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${stats.totalSpent.toLocaleString()}
+                ₱{stats.totalSpent.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Across all bookings

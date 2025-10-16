@@ -54,6 +54,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalBookings: 0,
     pendingBookings: 0,
@@ -68,6 +69,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    // Set loading to false after auth state is determined
+    setIsLoading(false);
+  }, [isAdmin]);
 
   const loadData = () => {
     if (typeof window !== "undefined") {
@@ -268,7 +274,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-3">
               <div className="text-2xl font-bold">
-                ${stats.totalRevenue.toLocaleString()}
+                ₱{stats.totalRevenue.toLocaleString()}
               </div>
             </CardContent>
           </Card>
@@ -316,7 +322,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-3">
               <div className="text-2xl font-bold">
-                ${stats.thisMonthRevenue.toLocaleString()}
+                ₱{stats.thisMonthRevenue.toLocaleString()}
               </div>
             </CardContent>
           </Card>
