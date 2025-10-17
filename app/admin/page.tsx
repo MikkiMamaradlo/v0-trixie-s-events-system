@@ -53,7 +53,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalBookings: 0,
     pendingBookings: 0,
@@ -69,10 +69,10 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
-  // useEffect(() => {
-  //   // Set loading to false after auth state is determined
-  //   setIsLoading(false);
-  // }, [isAdmin]);
+  useEffect(() => {
+    // Set loading to false after auth state is determined
+    setIsLoading(false);
+  }, [isAdmin]);
 
   const loadData = () => {
     if (typeof window !== "undefined") {
@@ -126,6 +126,10 @@ export default function AdminDashboard() {
       });
     }
   };
+
+  if (isLoading) {
+    return <PageLoading />;
+  }
 
   if (!isAdmin) {
     return <AdminLogin />;
