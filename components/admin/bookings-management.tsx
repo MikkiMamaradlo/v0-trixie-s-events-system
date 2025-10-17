@@ -71,7 +71,11 @@ export function BookingsManagement({
               ...booking,
               status: newStatus,
               paymentStatus:
-                newStatus === "confirmed" ? "paid" : booking.paymentStatus,
+                newStatus === "confirmed"
+                  ? "paid"
+                  : newStatus === "cancelled"
+                  ? "cancelled"
+                  : booking.paymentStatus,
             }
           : booking
       );

@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,7 +16,6 @@ import {
   Users,
   DollarSign,
   Clock,
-  Package,
   TrendingUp,
   AlertTriangle,
   Settings,
@@ -32,6 +30,7 @@ import { ReportsAnalytics } from "@/components/admin/reports-analytics";
 import { useAuth } from "@/lib/auth-context";
 import { AdminLogin } from "@/components/admin/admin-login";
 import Link from "next/link";
+import { PageLoading } from "@/components/ui/loading";
 
 interface Booking {
   id: number;
@@ -54,7 +53,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalBookings: 0,
     pendingBookings: 0,
@@ -70,10 +69,10 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
-  useEffect(() => {
-    // Set loading to false after auth state is determined
-    setIsLoading(false);
-  }, [isAdmin]);
+  // useEffect(() => {
+  //   // Set loading to false after auth state is determined
+  //   setIsLoading(false);
+  // }, [isAdmin]);
 
   const loadData = () => {
     if (typeof window !== "undefined") {
@@ -112,7 +111,7 @@ export default function AdminDashboard() {
         .reduce((sum: number, b: Booking) => sum + (b.totalAmount || 500), 0);
 
       const lowStockItems = storedInventory.filter(
-        (item: any) => item.available < 5
+        (item: { available: number }) => item.available < 5
       ).length;
 
       setStats({
@@ -159,7 +158,7 @@ export default function AdminDashboard() {
                 size="sm"
                 onClick={() => setActiveTab("inventory")}
               >
-                Inventory
+                Equipment
               </Button>
               <Button
                 variant={activeTab === "calendar" ? "default" : "ghost"}
@@ -226,7 +225,7 @@ export default function AdminDashboard() {
               size="sm"
               onClick={() => setActiveTab("inventory")}
             >
-              Inventory
+              Equipment
             </Button>
             <Button
               variant={activeTab === "calendar" ? "default" : "ghost"}
@@ -259,7 +258,7 @@ export default function AdminDashboard() {
             Admin Dashboard
           </h1>
           <p className="text-lg text-muted-foreground">
-            Manage bookings, inventory, and calendar
+            Manage bookings, equipment, and calendar
           </p>
         </div>
 

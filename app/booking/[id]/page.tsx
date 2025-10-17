@@ -32,6 +32,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
+import { PageLoading } from "@/components/ui/loading";
 
 const services = [
   {
@@ -191,9 +192,9 @@ export default function BookingPage({
       serviceId: service.id,
       date: date?.toISOString(),
       ...formData,
-      status: "pending",
+      status: "pending", // Start as pending for admin approval
       totalAmount: calculateTotal(),
-      paymentStatus: "paid",
+      paymentStatus: "pending", // Payment pending admin approval
       createdAt: new Date().toISOString(),
     };
 

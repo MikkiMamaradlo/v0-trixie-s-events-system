@@ -23,6 +23,7 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { PageLoading } from "@/components/ui/loading";
 
 interface Booking {
   id: number;

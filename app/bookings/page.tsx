@@ -12,7 +12,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Calendar, Users, Mail, Phone, CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  Users,
+  Mail,
+  Phone,
+  CheckCircle2,
+  Trash2,
+} from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -59,6 +66,16 @@ export default function BookingsPage() {
     }
   };
 
+  const deleteBooking = (bookingId: number) => {
+    if (typeof window !== "undefined") {
+      const updatedBookings = bookings.filter(
+        (booking) => booking.id !== bookingId
+      );
+      localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+      setBookings(updatedBookings);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12">
@@ -70,11 +87,11 @@ export default function BookingsPage() {
         </div>
 
         {success && (
-          <Alert className="mb-8 border-green-500/50 bg-green-500/10">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-700 dark:text-green-400">
-              Your booking has been submitted successfully! We'll contact you
-              shortly to confirm the details.
+          <Alert className="mb-8 border-yellow-500/50 bg-yellow-500/10">
+            <CheckCircle2 className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-700 dark:text-yellow-400">
+              Your booking has been submitted successfully! It is currently
+              pending admin approval. We'll contact you once it's confirmed.
             </AlertDescription>
           </Alert>
         )}
@@ -167,6 +184,18 @@ export default function BookingsPage() {
                       <p className="text-sm">{booking.notes}</p>
                     </div>
                   )}
+
+                  <div className="pt-4 border-t flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteBooking(booking.id)}
+                      className="flex items-center gap-2"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete Booking
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
