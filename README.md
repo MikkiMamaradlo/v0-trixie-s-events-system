@@ -37,9 +37,11 @@ A comprehensive event planning and booking system built with Next.js, featuring 
 
 ### Running the Application
 
+**Note:** This application consists of two separate interfaces (Customer and Admin) that run on different ports. To run both simultaneously, you'll need to open two terminal windows.
+
 #### Development Mode
 
-**Customer Portal:**
+**Customer Portal (Port 3000):**
 
 ```bash
 npm run dev:customer
@@ -47,7 +49,7 @@ npm run dev:customer
 
 Access at: http://localhost:3000
 
-**Admin Portal:**
+**Admin Portal (Port 3001):**
 
 ```bash
 npm run dev:admin
