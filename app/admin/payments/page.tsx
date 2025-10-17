@@ -43,8 +43,10 @@ export default function PaymentsPage() {
     paidBookings: 0,
     pendingPayments: 0,
   });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     loadPayments();
   }, []);
 
@@ -77,6 +79,22 @@ export default function PaymentsPage() {
     if (filterStatus === "all") return true;
     return booking.paymentStatus === filterStatus;
   });
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+              <CreditCard className="h-8 w-8 text-primary" />
+            </div>
+            <CardTitle>Payment Management</CardTitle>
+            <CardDescription>Loading payment data...</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return <AdminLogin />;

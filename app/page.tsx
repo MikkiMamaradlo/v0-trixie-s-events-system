@@ -25,11 +25,12 @@ export default function HomePage() {
           <div className="container mx-auto px-4 py-20 md:py-32">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-balance mb-6">
-                Make Your Event Unforgettable with Trixie's
+                Welcome to TRIXTECH Event Booking
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground text-balance mb-8">
                 Professional event planning, premium equipment rentals, and
-                exceptional catering services all in one place.
+                exceptional catering services all in one place. Book your
+                perfect event today!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="text-lg">
@@ -131,11 +132,12 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-20 md:py-32">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-balance mb-6">
-              Make Your Event Unforgettable with Trixie's
+              Welcome to TRIXTECH Event Booking
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground text-balance mb-8">
               Professional event planning, premium equipment rentals, and
-              exceptional catering services all in one place.
+              exceptional catering services all in one place. Book your perfect
+              event today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (

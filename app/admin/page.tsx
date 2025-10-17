@@ -69,6 +69,15 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
+  // Auto-refresh data every 30 seconds to show new bookings
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadData();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     // Set loading to false after auth state is determined
     setIsLoading(false);
@@ -259,10 +268,10 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-2">
-            Admin Dashboard
+            TRIXTECH Admin Panel
           </h1>
           <p className="text-lg text-muted-foreground">
-            Manage bookings, equipment, and calendar
+            Manage bookings, equipment, and calendar for your event business
           </p>
         </div>
 

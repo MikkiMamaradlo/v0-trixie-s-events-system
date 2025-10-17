@@ -85,6 +85,34 @@ npm run start:admin
 - URL: http://localhost:3000/login
 - Create new account via signup or use demo credentials
 
+### User-Friendly Setup Guide
+
+**For New Users:**
+
+1. **Start the Customer Portal first** (Port 3000) - This is where customers browse and book services
+2. **Start the Admin Portal second** (Port 3001) - This is where you manage bookings and business operations
+
+**Quick Start Commands:**
+
+```bash
+# Terminal 1 - Customer Portal
+npm run dev:customer
+
+# Terminal 2 - Admin Portal
+npm run dev:admin
+```
+
+**What Each Portal Does:**
+
+- **Customer Portal (localhost:3000):** Browse services, create accounts, make bookings, view booking history
+- **Admin Portal (localhost:3001):** Manage bookings, view analytics, handle inventory, process payments
+
+**Navigation Tips:**
+
+- Use the "Back to Site" button in the admin panel to quickly switch to the customer view
+- Customer navigation shows different options when logged in vs. logged out
+- Admin panel has a tabbed interface for different management sections
+
 ## Project Structure
 
 ```

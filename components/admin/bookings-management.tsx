@@ -211,6 +211,13 @@ export function BookingsManagement({
                           <p className="text-sm text-muted-foreground">
                             Guests: {booking.guests}
                           </p>
+                          <p className="text-sm text-muted-foreground">
+                            Total Amount: ₱
+                            {booking.totalAmount?.toLocaleString() || "N/A"}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Payment Status: {booking.paymentStatus || "pending"}
+                          </p>
                         </div>
                         {booking.notes && (
                           <div>
