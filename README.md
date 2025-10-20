@@ -113,6 +113,35 @@ npm run dev:admin
 - Customer navigation shows different options when logged in vs. logged out
 - Admin panel has a tabbed interface for different management sections
 
+### Troubleshooting
+
+**Common Issues:**
+
+1. **"Port already in use" error:**
+
+   - Close other Node.js processes: `taskkill /f /im node.exe` (Windows)
+   - Or use different ports by modifying the scripts in `package.json`
+
+2. **WebSocket connection issues:**
+
+   - Ensure both customer and admin servers are running
+   - Check that the WebSocket server initialized message appears in the console
+
+3. **Hydration mismatch errors:**
+
+   - This is normal during development and won't affect functionality
+   - The app will automatically recover on the client side
+
+4. **Data not persisting:**
+   - The app uses localStorage for demo purposes
+   - Data will reset when clearing browser storage
+
+**Getting Help:**
+
+- Check the browser console for error messages
+- Ensure Node.js version 18+ is installed
+- Verify all dependencies are installed with `npm install`
+
 ## Project Structure
 
 ```

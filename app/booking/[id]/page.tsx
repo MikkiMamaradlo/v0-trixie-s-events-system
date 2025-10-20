@@ -182,7 +182,7 @@ export default function BookingPage({
     return service.price;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Store booking in localStorage
@@ -206,6 +206,29 @@ export default function BookingPage({
         "bookings",
         JSON.stringify([...existingBookings, booking])
       );
+
+      // Notify admin via WebSocket
+      try {
+        await fetch("/api/notify-admin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "new_booking",
+            booking: {
+              id: booking.id,
+              service: booking.service,
+              name: booking.name,
+              email: booking.email,
+              totalAmount: booking.totalAmount,
+              createdAt: booking.createdAt,
+            },
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to notify admin:", error);
+      }
     }
 
     router.push("/bookings?success=true");

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -67,6 +68,111 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadData();
+
+    // Connect to WebSocket for real-time notifications
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 10;
+    let heartbeatInterval: NodeJS.Timeout;
+
+    const connectWebSocket = () => {
+      if (reconnectAttempts >= maxReconnectAttempts) {
+        console.error("Max WebSocket reconnection attempts reached");
+        toast.error("Connection lost. Please refresh the page.");
+        return;
+      }
+
+      try {
+        const port = window.location.port === "3001" ? "3001" : "3000";
+        ws = new WebSocket(`ws://localhost:${port}`);
+
+        ws.onopen = () => {
+          console.log("Connected to WebSocket server");
+          reconnectAttempts = 0; // Reset attempts on successful connection
+          toast.success("Connected to real-time notifications", {
+            duration: 2000,
+          });
+
+          // Start heartbeat ping every 25 seconds (less than server ping interval)
+          heartbeatInterval = setInterval(() => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: "ping" }));
+            }
+          }, 25000);
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === "connected") {
+              console.log("WebSocket connection confirmed");
+            } else if (data.type === "new_booking") {
+              toast.success(
+                `New booking received: ${data.booking.service} by ${data.booking.name}`,
+                {
+                  description: `Amount: ₱${data.booking.totalAmount}`,
+                  duration: 5000,
+                }
+              );
+              // Refresh data immediately when new booking arrives
+              loadData();
+            } else if (data.type === "pong") {
+              // Heartbeat response received
+              console.log("Heartbeat pong received");
+            }
+          } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+          }
+        };
+
+        ws.onclose = (event) => {
+          console.log(
+            `WebSocket connection closed with code: ${event.code}, reason: ${event.reason}`
+          );
+          if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+          }
+
+          // Only attempt reconnection for unexpected closures
+          if (event.code !== 1000 && event.code !== 1001) {
+            reconnectAttempts++;
+            const delay = Math.min(
+              1000 * Math.pow(2, reconnectAttempts),
+              30000
+            ); // Exponential backoff, max 30s
+            console.log(
+              `Attempting to reconnect in ${delay}ms (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
+            );
+            reconnectTimeout = setTimeout(connectWebSocket, delay);
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          // Don't show error toast for connection issues, let onclose handle reconnection
+        };
+      } catch (error) {
+        console.error("Failed to create WebSocket connection:", error);
+        reconnectAttempts++;
+        const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+        reconnectTimeout = setTimeout(connectWebSocket, delay);
+      }
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (ws) {
+        ws.close(1000, "Component unmounting");
+      }
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+      }
+    };
   }, []);
 
   // Auto-refresh data every 30 seconds to show new bookings
@@ -276,7 +382,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mb-8">
           <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-green-900 dark:text-green-100">
