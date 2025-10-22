@@ -292,7 +292,7 @@ export default function BookingPage({
                 <div className="pt-4 border-t">
                   <div className="flex items-center justify-between text-lg font-semibold">
                     <span>Total Amount:</span>
-                    <span className="text-primary">${calculateTotal()}</span>
+                    <span className="text-primary">₱{calculateTotal()}</span>
                   </div>
                 </div>
               )}

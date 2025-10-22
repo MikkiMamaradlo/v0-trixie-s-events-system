@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     if (body.type === "new_booking" && body.booking) {
       // Use global wsManager instead of importing
-      const wsManager = global.wsManager;
+      const wsManager = (global as { wsManager?: any }).wsManager;
 
       if (wsManager) {
         // Notify all connected admin clients

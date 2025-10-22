@@ -44,25 +44,30 @@ export function Navigation() {
 
             <div className="flex items-center gap-6">
               <Link
-                href="/"
+                href={isAdmin ? "/admin" : "/"}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === "/" ? "text-foreground" : "text-muted-foreground"
-                )}
-              >
-                Home
-              </Link>
-              <Link
-                href="/services"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === "/services"
+                  (pathname === "/" && !isAdmin) ||
+                    (pathname === "/admin" && isAdmin)
                     ? "text-foreground"
                     : "text-muted-foreground"
                 )}
               >
-                Services
+                {isAdmin ? "Admin Panel" : "Home"}
               </Link>
+              {!isAdmin && (
+                <Link
+                  href="/services"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === "/services"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Services
+                </Link>
+              )}
 
               <div className="flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
@@ -89,25 +94,30 @@ export function Navigation() {
 
           <div className="flex items-center gap-6">
             <Link
-              href="/"
+              href={isAdmin ? "/admin" : "/"}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-primary",
-                pathname === "/" ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Home
-            </Link>
-            <Link
-              href="/services"
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === "/services"
+                (pathname === "/" && !isAdmin) ||
+                  (pathname === "/admin" && isAdmin)
                   ? "text-foreground"
                   : "text-muted-foreground"
               )}
             >
-              Services
+              {isAdmin ? "Admin Panel" : "Home"}
             </Link>
+            {!isAdmin && (
+              <Link
+                href="/services"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/services"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                Services
+              </Link>
+            )}
             {isAuthenticated && !isAdmin && (
               <Link
                 href="/dashboard"

@@ -8,12 +8,27 @@ import {
   type ReactNode,
 } from "react";
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  phone?: string;
+  createdAt: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
-  user: { name: string; email: string } | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  loginAsAdmin: (password: string) => Promise<boolean>;
+  user: User | null;
+  token: string | null;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  loginAsAdmin: (
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
   signup: (
     name: string,
     email: string,
@@ -21,6 +36,7 @@ interface AuthContextType {
     confirmPassword: string
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,62 +44,127 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(
-    null
-  );
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is logged in from localStorage
+    // Check if user is logged in from localStorage (for backward compatibility)
     if (typeof window !== "undefined") {
-      const storedAuth = localStorage.getItem("auth");
-      if (storedAuth) {
-        const authData = JSON.parse(storedAuth);
-        setIsAuthenticated(true);
-        setIsAdmin(authData.isAdmin || false);
-        setUser(authData.user || null);
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("adminToken");
+      if (token) {
+        // Verify token with API
+        verifyToken(token);
       }
     }
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication - in production, this would call an API
-    // For demo purposes, any email/password combination works
-    if (email && password) {
-      const userData = {
-        name: email.split("@")[0],
-        email: email,
-      };
-      const authData = {
-        isAdmin: false,
-        user: userData,
-      };
-      if (typeof window !== "undefined") {
-        localStorage.setItem("auth", JSON.stringify(authData));
+  const verifyToken = async (token: string) => {
+    try {
+      const response = await fetch("/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(true);
+        setIsAdmin(data.user.role === "admin");
+        setUser(data.user);
+      } else {
+        // Token invalid, clear it
+        localStorage.removeItem("token");
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("auth");
       }
-      setIsAuthenticated(true);
-      setIsAdmin(false);
-      setUser(userData);
-      return true;
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("auth");
     }
-    return false;
   };
 
-  const loginAsAdmin = async (password: string): Promise<boolean> => {
-    // Mock admin authentication - default password is "admin123"
-    if (password === "admin123") {
-      const authData = {
-        isAdmin: true,
-        user: { name: "Admin", email: "admin@trixtech.com" },
-      };
-      if (typeof window !== "undefined") {
-        localStorage.setItem("auth", JSON.stringify(authData));
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const userData = data.user;
+        const tokenData = data.token;
+
+        // Store in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", tokenData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        }
+
+        // Update state
+        setToken(tokenData);
+        setUser(userData);
+        setIsAuthenticated(true);
+        setIsAdmin(userData.role === "admin");
+
+        return { success: true };
+      } else {
+        return { success: false, error: data.message || "Login failed" };
       }
-      setIsAuthenticated(true);
-      setIsAdmin(true);
-      setUser({ name: "Admin", email: "admin@trixtech.com" });
-      return true;
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, error: "Network error. Please try again." };
     }
-    return false;
+  };
+
+  const loginAsAdmin = async (
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const userData = data.user;
+        const tokenData = data.token;
+
+        // Store in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", tokenData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        }
+
+        // Update state
+        setToken(tokenData);
+        setUser(userData);
+        setIsAuthenticated(true);
+        setIsAdmin(true);
+
+        return { success: true };
+      } else {
+        return { success: false, error: data.message || "Admin login failed" };
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      return { success: false, error: "Network error. Please try again." };
+    }
   };
 
   const signup = async (
@@ -92,56 +173,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     confirmPassword: string
   ): Promise<{ success: boolean; error?: string }> => {
-    // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
-      return { success: false, error: "All fields are required" };
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const userData = data.user;
+        const tokenData = data.token;
+
+        // Store in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", tokenData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        }
+
+        // Update state
+        setToken(tokenData);
+        setUser(userData);
+        setIsAuthenticated(true);
+        setIsAdmin(userData.role === "admin");
+
+        return { success: true };
+      } else {
+        return { success: false, error: data.message };
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      return { success: false, error: "Network error. Please try again." };
     }
-
-    if (password !== confirmPassword) {
-      return { success: false, error: "Passwords do not match" };
-    }
-
-    if (password.length < 6) {
-      return {
-        success: false,
-        error: "Password must be at least 6 characters long",
-      };
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return { success: false, error: "Please enter a valid email address" };
-    }
-
-    // Mock signup - in production, this would call an API
-    // For demo purposes, create a new customer user
-    const userData = {
-      name: name,
-      email: email,
-    };
-    const authData = {
-      isAdmin: false, // New users are always customers
-      user: userData,
-    };
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("auth", JSON.stringify(authData));
-    }
-    setIsAuthenticated(true);
-    setIsAdmin(false);
-    setUser(userData);
-
-    return { success: true };
   };
 
   const logout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("auth");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
+    setToken(null);
+    setUser(null);
     setIsAuthenticated(false);
     setIsAdmin(false);
-    setUser(null);
+  };
+
+  const refreshUser = async () => {
+    if (!token) return;
+
+    try {
+      const response = await fetch("/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setUser(data.user);
+          setIsAdmin(data.user.role === "admin");
+          if (typeof window !== "undefined") {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to refresh user:", error);
+    }
   };
 
   return (
@@ -150,10 +252,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated,
         isAdmin,
         user,
+        token,
         login,
         loginAsAdmin,
         signup,
         logout,
+        refreshUser,
       }}
     >
       {children}

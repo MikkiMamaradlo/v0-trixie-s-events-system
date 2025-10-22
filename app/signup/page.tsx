@@ -34,12 +34,17 @@ export default function SignupPage() {
     setError("");
     setIsLoading(true);
 
-    const result = await signup(name, email, password, confirmPassword);
+    try {
+      const result = await signup(name, email, password, confirmPassword);
 
-    if (result.success) {
-      router.push("/services");
-    } else {
-      setError(result.error || "An error occurred during signup");
+      if (result.success) {
+        router.push("/services");
+      } else {
+        setError(result.error || "An error occurred during signup");
+      }
+    } catch (error) {
+      setError("Network error. Please try again.");
+    } finally {
       setIsLoading(false);
     }
   };

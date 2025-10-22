@@ -2,6 +2,7 @@ const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
 const WebSocket = require("ws");
+require("dotenv").config();
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -11,7 +12,7 @@ const handle = app.getRequestHandler();
 class WebSocketManager {
   constructor() {
     this.wss = null;
-    this.clients = new Set();
+    this.clients = new Map(); // Change to Map to store client with user info
     this.heartbeatInterval = null;
   }
 
@@ -19,19 +20,39 @@ class WebSocketManager {
     if (this.wss) return; // Already initialized
 
     this.wss = new WebSocket.Server({
-      server,
+      noServer: true, // Don't attach to server automatically to avoid conflicts with Next.js
       perMessageDeflate: false, // Disable compression to avoid memory issues
       maxPayload: 1024 * 1024, // 1MB max payload
-      // Add heartbeat settings
-      heartbeat: {
-        interval: 30000, // 30 seconds
-        timeout: 5000, // 5 seconds timeout
-      },
+    });
+
+    // Manually handle WebSocket upgrades to avoid conflicts with Next.js
+    server.on("upgrade", (request, socket, head) => {
+      // Check if this is a WebSocket upgrade request
+      if (
+        request.headers.upgrade &&
+        request.headers.upgrade.toLowerCase() === "websocket"
+      ) {
+        this.wss.handleUpgrade(request, socket, head, (ws) => {
+          this.wss.emit("connection", ws, request);
+        });
+      } else {
+        // Not a WebSocket request, destroy the socket
+        socket.destroy();
+      }
     });
 
     this.wss.on("connection", (ws, request) => {
       console.log("New WebSocket connection established");
-      this.clients.add(ws);
+
+      // Initialize client info - will be updated when user authenticates
+      const clientInfo = {
+        ws,
+        userId: null,
+        role: null,
+        isAuthenticated: false,
+      };
+
+      this.clients.set(ws, clientInfo);
 
       // Send initial connection confirmation
       ws.send(
@@ -63,6 +84,17 @@ class WebSocketManager {
           const message = JSON.parse(data.toString());
           if (message.type === "ping") {
             ws.send(JSON.stringify({ type: "pong" }));
+          } else if (message.type === "authenticate") {
+            // Handle authentication message
+            const clientInfo = this.clients.get(ws);
+            if (clientInfo && message.userId && message.role) {
+              clientInfo.userId = message.userId;
+              clientInfo.role = message.role;
+              clientInfo.isAuthenticated = true;
+              console.log(
+                `WebSocket client authenticated: ${message.userId} (${message.role})`
+              );
+            }
           }
         } catch (error) {
           // Ignore invalid messages
@@ -113,18 +145,21 @@ class WebSocketManager {
     };
 
     const message = JSON.stringify(notification);
+    let adminCount = 0;
 
-    this.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
+    this.clients.forEach((clientInfo, ws) => {
+      if (
+        ws.readyState === WebSocket.OPEN &&
+        clientInfo.isAuthenticated &&
+        clientInfo.role === "admin"
+      ) {
+        // Send only to authenticated admin clients
+        ws.send(message);
+        adminCount++;
       }
     });
 
-    console.log(
-      "New booking notification sent to",
-      this.clients.size,
-      "clients"
-    );
+    console.log(`New booking notification sent to ${adminCount} admin(s)`);
   }
 
   getClientCount() {
@@ -136,6 +171,16 @@ const wsManager = new WebSocketManager();
 
 const startServer = async () => {
   await app.prepare();
+
+  // Connect to MongoDB
+  try {
+    const connectDB = require("./lib/mongodb");
+    await connectDB();
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    process.exit(1);
+  }
 
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
@@ -155,6 +200,7 @@ const startServer = async () => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
     console.log(`> WebSocket server initialized for real-time notifications`);
+    console.log(`> MongoDB backend connected`);
     console.log(`> WebSocket manager available: ${!!global.wsManager}`);
   });
 };

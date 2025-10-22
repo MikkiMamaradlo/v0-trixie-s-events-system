@@ -35,8 +35,8 @@ import {
   isWithinInterval,
 } from "date-fns";
 
-interface Booking {
-  id: number;
+interface BookingData {
+  id: string;
   service: string;
   serviceId: number;
   date: string;
@@ -52,7 +52,7 @@ interface Booking {
 }
 
 interface ReportsAnalyticsProps {
-  bookings: Booking[];
+  bookings: BookingData[];
 }
 
 export function ReportsAnalytics({ bookings }: ReportsAnalyticsProps) {

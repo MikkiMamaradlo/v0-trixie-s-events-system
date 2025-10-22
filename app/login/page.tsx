@@ -32,12 +32,17 @@ export default function LoginPage() {
     setError("");
     setIsLoading(true);
 
-    const success = await login(email, password);
+    try {
+      const success = await login(email, password);
 
-    if (success) {
-      router.push("/services");
-    } else {
-      setError("Invalid credentials. Please try again.");
+      if (success) {
+        router.push("/services");
+      } else {
+        setError("Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      setError("Network error. Please try again.");
+    } finally {
       setIsLoading(false);
     }
   };

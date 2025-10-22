@@ -34,7 +34,23 @@ import Link from "next/link";
 import { PageLoading } from "@/components/ui/loading";
 
 interface Booking {
-  id: number;
+  id: string;
+  service: string;
+  serviceId: number;
+  date: string;
+  name: string;
+  email: string;
+  phone: string;
+  guests: string;
+  notes: string;
+  status: "pending" | "confirmed" | "cancelled";
+  createdAt: string;
+  totalAmount?: number;
+  paymentStatus?: string;
+}
+
+interface AdminBooking {
+  id: string;
   service: string;
   serviceId: number;
   date: string;
@@ -52,7 +68,7 @@ interface Booking {
 export default function AdminDashboard() {
   const { isAdmin } = useAuth();
   const router = useRouter();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -84,7 +100,7 @@ export default function AdminDashboard() {
       }
 
       try {
-        const port = window.location.port === "3001" ? "3001" : "3000";
+        const port = window.location.port || "3000";
         ws = new WebSocket(`ws://localhost:${port}`);
 
         ws.onopen = () => {
@@ -97,7 +113,7 @@ export default function AdminDashboard() {
           // Start heartbeat ping every 25 seconds (less than server ping interval)
           heartbeatInterval = setInterval(() => {
             if (ws && ws.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({ type: "ping" }));
+              ws!.send(JSON.stringify({ type: "ping" }));
             }
           }, 25000);
         };
@@ -109,9 +125,9 @@ export default function AdminDashboard() {
               console.log("WebSocket connection confirmed");
             } else if (data.type === "new_booking") {
               toast.success(
-                `New booking received: ${data.booking.service} by ${data.booking.name}`,
+                `New booking received: ${data.booking.serviceName} by ${data.booking.customerName}`,
                 {
-                  description: `Amount: ₱${data.booking.totalAmount}`,
+                  description: `Amount: ₱${data.booking.totalPrice}`,
                   duration: 5000,
                 }
               );
@@ -189,55 +205,115 @@ export default function AdminDashboard() {
     setIsLoading(false);
   }, [isAdmin]);
 
-  const loadData = () => {
-    if (typeof window !== "undefined") {
-      const storedBookings = JSON.parse(
-        localStorage.getItem("bookings") || "[]"
-      );
-      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-      const storedInventory = JSON.parse(
-        localStorage.getItem("inventory") || "[]"
-      );
+  const loadData = async () => {
+    try {
+      // Fetch bookings from API
+      const token = localStorage.getItem("adminToken");
+      if (!token) return;
 
-      setBookings(storedBookings);
+      const bookingsResponse = await fetch("/api/admin/bookings", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      // Calculate stats
-      const pending = storedBookings.filter(
+      let transformedBookings: AdminBooking[] = [];
+      if (bookingsResponse.ok) {
+        const bookingsData = await bookingsResponse.json();
+        // Transform bookings to match component interface
+        transformedBookings = (bookingsData.bookings || []).map(
+          (booking: any) => ({
+            id: booking._id,
+            service: booking.serviceName,
+            serviceId: booking.serviceId,
+            date: booking.date,
+            name: booking.customerName,
+            email: booking.email,
+            phone: booking.phone,
+            guests: booking.guests.toString(),
+            notes: booking.specialRequests || "",
+            status: booking.status,
+            createdAt: booking.createdAt,
+            totalAmount: booking.totalPrice,
+            paymentStatus: booking.status === "confirmed" ? "paid" : "pending",
+          })
+        );
+        setBookings(transformedBookings);
+      } else {
+        console.error("Failed to fetch bookings");
+        setBookings([]);
+      }
+
+      // Fetch users from API
+      const usersResponse = await fetch("/api/admin/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      let totalUsers = 0;
+      if (usersResponse.ok) {
+        const usersData = await usersResponse.json();
+        totalUsers = usersData.users?.length || 0;
+      }
+
+      // Fetch inventory from API
+      const inventoryResponse = await fetch("/api/inventory");
+      let lowStockItems = 0;
+      if (inventoryResponse.ok) {
+        const inventoryData = await inventoryResponse.json();
+        lowStockItems =
+          inventoryData.inventory?.filter(
+            (item: { available: number }) => item.available < 5
+          ).length || 0;
+      }
+
+      // Calculate stats from fetched bookings
+      const pending = transformedBookings.filter(
         (b: Booking) => b.status === "pending"
       ).length;
-      const confirmed = storedBookings.filter(
+      const confirmed = transformedBookings.filter(
         (b: Booking) => b.status === "confirmed"
       ).length;
-      const cancelled = storedBookings.filter(
+      const cancelled = transformedBookings.filter(
         (b: Booking) => b.status === "cancelled"
       ).length;
 
-      const totalRevenue = storedBookings
-        .filter((b: Booking) => b.paymentStatus === "paid")
-        .reduce((sum: number, b: Booking) => sum + (b.totalAmount || 500), 0);
+      const totalRevenue = transformedBookings
+        .filter((b: Booking) => b.status === "confirmed") // Assuming confirmed bookings are paid
+        .reduce((sum: number, b: Booking) => sum + (b.totalAmount || 0), 0);
 
       const thisMonth = new Date();
       thisMonth.setDate(1);
-      const thisMonthRevenue = storedBookings
+      const thisMonthRevenue = transformedBookings
         .filter(
           (b: Booking) =>
-            b.paymentStatus === "paid" && new Date(b.createdAt) >= thisMonth
+            b.status === "confirmed" && new Date(b.createdAt) >= thisMonth
         )
-        .reduce((sum: number, b: Booking) => sum + (b.totalAmount || 500), 0);
-
-      const lowStockItems = storedInventory.filter(
-        (item: { available: number }) => item.available < 5
-      ).length;
+        .reduce((sum: number, b: Booking) => sum + (b.totalAmount || 0), 0);
 
       setStats({
-        totalBookings: storedBookings.length,
+        totalBookings: transformedBookings.length,
         pendingBookings: pending,
         confirmedBookings: confirmed,
         cancelledBookings: cancelled,
         totalRevenue,
         lowStockItems,
-        totalUsers: storedUsers.length,
+        totalUsers,
         thisMonthRevenue,
+      });
+    } catch (error) {
+      console.error("Error loading data:", error);
+      setBookings([]);
+      setStats({
+        totalBookings: 0,
+        pendingBookings: 0,
+        confirmedBookings: 0,
+        cancelledBookings: 0,
+        totalRevenue: 0,
+        lowStockItems: 0,
+        totalUsers: 0,
+        thisMonthRevenue: 0,
       });
     }
   };
@@ -314,6 +390,7 @@ export default function AdminDashboard() {
               size="sm"
               onClick={() => {
                 localStorage.removeItem("adminAuth");
+                localStorage.removeItem("adminToken");
                 router.push("/");
               }}
             >
@@ -391,7 +468,7 @@ export default function AdminDashboard() {
               <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+              <div className="text-3xl font-bold text-green-900 dark:text-green-100">
                 ₱{stats.totalRevenue.toLocaleString()}
               </div>
             </CardContent>
@@ -447,7 +524,7 @@ export default function AdminDashboard() {
               <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </CardHeader>
             <CardContent className="p-3">
-              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+              <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">
                 ₱{stats.thisMonthRevenue.toLocaleString()}
               </div>
             </CardContent>

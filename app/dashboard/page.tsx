@@ -25,8 +25,8 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { PageLoading } from "@/components/ui/loading";
 
-interface Booking {
-  id: number;
+interface BookingData {
+  id: string;
   service: string;
   serviceId: number;
   date: string;
@@ -51,7 +51,7 @@ export default function CustomerDashboard() {
     }
   }, [isAuthenticated, isAdmin, router]);
 
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingData[]>([]);
   const [stats, setStats] = useState({
     totalBookings: 0,
     upcomingBookings: 0,
@@ -70,13 +70,13 @@ export default function CustomerDashboard() {
         localStorage.getItem("bookings") || "[]"
       );
       const userBookings = storedBookings.filter(
-        (b: Booking) => b.email === user?.email
+        (b: BookingData) => b.email === user?.email
       );
 
       setBookings(userBookings);
 
       const upcoming = userBookings.filter(
-        (b: Booking) =>
+        (b: BookingData) =>
           b.status === "confirmed" && new Date(b.date) > new Date()
       ).length;
 
@@ -84,7 +84,7 @@ export default function CustomerDashboard() {
         totalBookings: userBookings.length,
         upcomingBookings: upcoming,
         totalSpent: userBookings.reduce(
-          (total: number, booking: Booking) =>
+          (total: number, booking: BookingData) =>
             total + (booking.totalAmount || 0),
           0
         ),

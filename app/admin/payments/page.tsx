@@ -23,7 +23,7 @@ import { useAuth } from "@/lib/auth-context";
 import { AdminLogin } from "@/components/admin/admin-login";
 import Link from "next/link";
 
-interface Booking {
+interface BookingData {
   id: number;
   service: string;
   date: string;
@@ -36,7 +36,7 @@ interface Booking {
 
 export default function PaymentsPage() {
   const { isAdmin } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingData[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [stats, setStats] = useState({
     totalRevenue: 0,
@@ -57,14 +57,14 @@ export default function PaymentsPage() {
     setBookings(storedBookings);
 
     const paid = storedBookings.filter(
-      (b: Booking) => b.paymentStatus === "paid"
+      (b: BookingData) => b.paymentStatus === "paid"
     );
     const pending = storedBookings.filter(
-      (b: Booking) => b.paymentStatus === "pending"
+      (b: BookingData) => b.paymentStatus === "pending"
     );
 
     const totalRevenue = paid.reduce(
-      (sum: number, b: Booking) => sum + (b.totalAmount || 0),
+      (sum: number, b: BookingData) => sum + (b.totalAmount || 0),
       0
     );
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import {
   Card,
   CardContent,
@@ -9,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Calendar,
@@ -22,9 +23,10 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
+import { PageLoading } from "@/components/ui/loading";
 
-interface Booking {
-  id: number;
+interface BookingData {
+  id: string;
   service: string;
   serviceId: number;
   date: string;
@@ -40,18 +42,66 @@ interface Booking {
 }
 
 export default function BookingsPage() {
-  const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const { isAuthenticated, token } = useAuth();
+  const router = useRouter();
+  const [bookings, setBookings] = useState<BookingData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedBookings = JSON.parse(
-        localStorage.getItem("bookings") || "[]"
-      );
-      setBookings(storedBookings);
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
     }
-  }, []);
+
+    loadBookings();
+  }, [isAuthenticated, router]);
+
+  const loadBookings = async () => {
+    try {
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const response = await fetch("/api/bookings", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Transform bookings to match component interface
+        const transformedBookings = (data.bookings || []).map(
+          (booking: any) => ({
+            id: booking._id,
+            service: booking.serviceName,
+            serviceId: booking.serviceId,
+            date: new Date(booking.date).toLocaleDateString(),
+            name: booking.customerName,
+            email: booking.email,
+            phone: booking.phone,
+            guests: booking.guests.toString(),
+            notes: booking.specialRequests || "",
+            status: booking.status,
+            createdAt: new Date(booking.createdAt).toLocaleDateString(),
+            totalAmount: booking.totalPrice,
+            paymentStatus: booking.status === "confirmed" ? "paid" : "pending",
+          })
+        );
+        setBookings(transformedBookings);
+      } else {
+        console.error("Failed to fetch bookings");
+        setBookings([]);
+      }
+    } catch (error) {
+      console.error("Error loading bookings:", error);
+      setBookings([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,13 +116,28 @@ export default function BookingsPage() {
     }
   };
 
-  const deleteBooking = (bookingId: number) => {
-    if (typeof window !== "undefined") {
-      const updatedBookings = bookings.filter(
-        (booking) => booking.id !== bookingId
-      );
-      localStorage.setItem("bookings", JSON.stringify(updatedBookings));
-      setBookings(updatedBookings);
+  const deleteBooking = async (bookingId: string) => {
+    try {
+      if (!token) return;
+
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Remove from local state
+        const updatedBookings = bookings.filter(
+          (booking) => booking.id !== bookingId
+        );
+        setBookings(updatedBookings);
+      } else {
+        console.error("Failed to delete booking");
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
     }
   };
 
@@ -87,9 +152,9 @@ export default function BookingsPage() {
         </div>
 
         {success && (
-          <Alert className="mb-8 border-yellow-500/50 bg-yellow-500/10">
-            <CheckCircle2 className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-700 dark:text-yellow-400">
+          <Alert className="mb-8 border-green-500/50 bg-green-500/10">
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-700 dark:text-green-400">
               Your booking has been submitted successfully! It is currently
               pending admin approval. We'll contact you once it's confirmed.
             </AlertDescription>

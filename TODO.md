@@ -1,20 +1,27 @@
-# TODO: Fix Bugs, Add Loading Features, and Improve User Experience in TRIXTECH Event Booking System
+# Task: Fix Connection Between Frontend and Backend Systems
 
-## Pending Tasks
+## Information Gathered
 
-- [ ] Fix any remaining currency inconsistencies across all pages
-- [ ] Ensure Booking interfaces are consistent across all customer pages
-- [ ] Verify admin pages properly display completed transactions
-- [ ] Test booking flow end-to-end to ensure transactions appear in admin
-- [ ] Add loading states to all pages and features
-- [ ] Enhance customer dashboard UI for better presentation
-- [ ] Enhance admin dashboard UI for better presentation
-- [ ] Improve overall responsiveness and styling
-- [ ] Create easy-to-run scripts and update documentation
+- The booking creation process saves to MongoDB successfully
+- WebSocket notifications are set up but not working properly
+- Admin panel uses localStorage for data instead of fetching from API
+- Data structure mismatch between WebSocket notification and admin panel expectations
 
-## Completed Tasks
+## Plan
 
-- [x] Fix currency symbol in booking page from $ to ₱
-- [x] Update Booking interface in customer pages to include totalAmount and paymentStatus
-- [x] Analyze existing files and create plan
-- [x] Get user approval for plan
+- Update admin panel to fetch real booking data from API instead of localStorage
+- Fix data structure mismatch in WebSocket notifications
+- Ensure WebSocket connection is properly established
+- Test the complete booking flow from creation to admin notification
+
+## Dependent Files to Edit
+
+- `app/admin/page.tsx`: Replace localStorage data loading with API calls
+- `app/api/bookings/route.ts`: Ensure correct data structure in WebSocket notification
+- `server.js`: Verify WebSocket server is properly initialized
+
+## Followup Steps
+
+- Test booking creation and verify admin receives real-time notifications
+- Confirm data is properly fetched from MongoDB in admin panel
+- Verify WebSocket connection stability

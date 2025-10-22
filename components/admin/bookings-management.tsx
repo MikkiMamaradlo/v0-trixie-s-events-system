@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
 import {
   Card,
   CardContent,
@@ -28,8 +29,8 @@ import {
 import { Calendar, Mail, Phone, Users, Eye } from "lucide-react";
 import { format } from "date-fns";
 
-interface Booking {
-  id: number;
+interface BookingData {
+  id: string;
   service: string;
   serviceId: number;
   date: string;
@@ -45,7 +46,7 @@ interface Booking {
 }
 
 interface BookingsManagementProps {
-  bookings: Booking[];
+  bookings: BookingData[];
   onUpdate: () => void;
 }
 
@@ -53,6 +54,7 @@ export function BookingsManagement({
   bookings,
   onUpdate,
 }: BookingsManagementProps) {
+  const { token } = useAuth();
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
   const filteredBookings = bookings.filter((booking) => {
@@ -60,40 +62,29 @@ export function BookingsManagement({
     return booking.status === filterStatus;
   });
 
-  const updateBookingStatus = (
-    bookingId: number,
+  const updateBookingStatus = async (
+    bookingId: string,
     newStatus: "pending" | "confirmed" | "cancelled"
   ) => {
-    if (typeof window !== "undefined") {
-      const updatedBookings = bookings.map((booking) =>
-        booking.id === bookingId
-          ? {
-              ...booking,
-              status: newStatus,
-              paymentStatus:
-                newStatus === "confirmed"
-                  ? "paid"
-                  : newStatus === "cancelled"
-                  ? "cancelled"
-                  : booking.paymentStatus,
-            }
-          : booking
-      );
-      localStorage.setItem("bookings", JSON.stringify(updatedBookings));
-      onUpdate();
-    }
-  };
+    try {
+      if (!token) return;
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return "bg-green-500/10 text-green-700 dark:text-green-400";
-      case "pending":
-        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
-      case "cancelled":
-        return "bg-red-500/10 text-red-700 dark:text-red-400";
-      default:
-        return "bg-muted text-muted-foreground";
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        onUpdate();
+      } else {
+        console.error("Failed to update booking status");
+      }
+    } catch (error) {
+      console.error("Error updating booking status:", error);
     }
   };
 
@@ -139,7 +130,15 @@ export function BookingsManagement({
                       Booked by {booking.name}
                     </p>
                   </div>
-                  <Badge className={getStatusColor(booking.status)}>
+                  <Badge
+                    className={`${
+                      booking.status === "confirmed"
+                        ? "bg-green-500/10 text-green-700"
+                        : booking.status === "pending"
+                        ? "bg-yellow-500/10 text-yellow-700"
+                        : "bg-red-500/10 text-red-700"
+                    } hover:scale-105 transition-transform duration-200`}
+                  >
                     {booking.status.charAt(0).toUpperCase() +
                       booking.status.slice(1)}
                   </Badge>
