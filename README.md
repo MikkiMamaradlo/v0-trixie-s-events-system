@@ -31,9 +31,9 @@ A comprehensive event planning and booking system built with Next.js, featuring 
 
 1. Clone the repository
 2. Install dependencies:
-   ```bash
+   \`\`\`bash
    npm install
-   ```
+   \`\`\`
 
 ### Running the Application
 
@@ -43,17 +43,17 @@ A comprehensive event planning and booking system built with Next.js, featuring 
 
 **Customer Portal (Port 3000):**
 
-```bash
+\`\`\`bash
 npm run dev:customer
-```
+\`\`\`
 
 Access at: http://localhost:3000
 
 **Admin Portal (Port 3001):**
 
-```bash
+\`\`\`bash
 npm run dev:admin
-```
+\`\`\`
 
 Access at: http://localhost:3001
 
@@ -61,17 +61,17 @@ Access at: http://localhost:3001
 
 **Customer Portal:**
 
-```bash
+\`\`\`bash
 npm run build
 npm run start:customer
-```
+\`\`\`
 
 **Admin Portal:**
 
-```bash
+\`\`\`bash
 npm run build
 npm run start:admin
-```
+\`\`\`
 
 ### Default Credentials
 
@@ -94,13 +94,13 @@ npm run start:admin
 
 **Quick Start Commands:**
 
-```bash
+\`\`\`bash
 # Terminal 1 - Customer Portal
 npm run dev:customer
 
 # Terminal 2 - Admin Portal
 npm run dev:admin
-```
+\`\`\`
 
 **What Each Portal Does:**
 
@@ -144,7 +144,7 @@ npm run dev:admin
 
 ## Project Structure
 
-```
+\`\`\`
 ├── app/                    # Next.js app directory
 │   ├── admin/             # Admin pages
 │   ├── booking/           # Booking pages
@@ -157,7 +157,7 @@ npm run dev:admin
 │   └── ui/               # UI components
 ├── lib/                  # Utilities and context
 └── public/               # Static assets
-```
+\`\`\`
 
 ## Technologies Used
 
