@@ -1,180 +1,219 @@
 # TRIXTECH Event Booking System
 
-A comprehensive event planning and booking system built with Next.js, featuring separate customer and admin interfaces.
-
-## Features
-
-### Customer Portal (Port 3000)
-
-- Event browsing and booking
-- User registration and authentication
-- Dashboard for managing bookings
-- Service selection (Party Planning, Equipment Rental, Catering)
-
-### Admin Portal (Port 3001)
-
-- Comprehensive admin dashboard
-- User management
-- Booking management
-- Inventory management
-- Reports and analytics
-- Calendar view
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-   \`\`\`bash
-   npm install
-   \`\`\`
-
-### Running the Application
-
-**Note:** This application consists of two separate interfaces (Customer and Admin) that run on different ports. To run both simultaneously, you'll need to open two terminal windows.
-
-#### Development Mode
-
-**Customer Portal (Port 3000):**
-
-\`\`\`bash
-npm run dev:customer
-\`\`\`
-
-Access at: http://localhost:3000
-
-**Admin Portal (Port 3001):**
-
-\`\`\`bash
-npm run dev:admin
-\`\`\`
-
-Access at: http://localhost:3001
-
-#### Production Mode
-
-**Customer Portal:**
-
-\`\`\`bash
-npm run build
-npm run start:customer
-\`\`\`
-
-**Admin Portal:**
-
-\`\`\`bash
-npm run build
-npm run start:admin
-\`\`\`
-
-### Default Credentials
-
-**Admin Login:**
-
-- URL: http://localhost:3001/admin
-- Password: admin123
-
-**Customer Login:**
-
-- URL: http://localhost:3000/login
-- Create new account via signup or use demo credentials
-
-### User-Friendly Setup Guide
-
-**For New Users:**
-
-1. **Start the Customer Portal first** (Port 3000) - This is where customers browse and book services
-2. **Start the Admin Portal second** (Port 3001) - This is where you manage bookings and business operations
-
-**Quick Start Commands:**
-
-\`\`\`bash
-# Terminal 1 - Customer Portal
-npm run dev:customer
-
-# Terminal 2 - Admin Portal
-npm run dev:admin
-\`\`\`
-
-**What Each Portal Does:**
-
-- **Customer Portal (localhost:3000):** Browse services, create accounts, make bookings, view booking history
-- **Admin Portal (localhost:3001):** Manage bookings, view analytics, handle inventory, process payments
-
-**Navigation Tips:**
-
-- Use the "Back to Site" button in the admin panel to quickly switch to the customer view
-- Customer navigation shows different options when logged in vs. logged out
-- Admin panel has a tabbed interface for different management sections
-
-### Troubleshooting
-
-**Common Issues:**
-
-1. **"Port already in use" error:**
-
-   - Close other Node.js processes: `taskkill /f /im node.exe` (Windows)
-   - Or use different ports by modifying the scripts in `package.json`
-
-2. **WebSocket connection issues:**
-
-   - Ensure both customer and admin servers are running
-   - Check that the WebSocket server initialized message appears in the console
-
-3. **Hydration mismatch errors:**
-
-   - This is normal during development and won't affect functionality
-   - The app will automatically recover on the client side
-
-4. **Data not persisting:**
-   - The app uses localStorage for demo purposes
-   - Data will reset when clearing browser storage
-
-**Getting Help:**
-
-- Check the browser console for error messages
-- Ensure Node.js version 18+ is installed
-- Verify all dependencies are installed with `npm install`
+A production-ready event booking platform with completely separated frontend and backend services.
 
 ## Project Structure
 
 \`\`\`
-├── app/                    # Next.js app directory
-│   ├── admin/             # Admin pages
-│   ├── booking/           # Booking pages
-│   ├── dashboard/         # Customer dashboard
-│   ├── login/             # Login page
-│   ├── signup/            # Signup page
-│   └── services/          # Services page
-├── components/            # Reusable components
-│   ├── admin/            # Admin-specific components
-│   └── ui/               # UI components
-├── lib/                  # Utilities and context
-└── public/               # Static assets
+project-root/
+├── frontend/               # Next.js frontend application (Port 3000)
+│   ├── app/               # Next.js app directory
+│   ├── components/        # React components
+│   ├── lib/              # Utilities and contexts
+│   ├── package.json
+│   └── README.md
+│
+├── backend/               # Express.js backend API (Port 5000)
+│   ├── routes/           # API route handlers
+│   ├── server.js         # Express server
+│   ├── package.json
+│   ├── .env              # Environment variables
+│   └── README.md
+│
+└── README.md             # This file
 \`\`\`
 
-## Technologies Used
+## Features
 
-- **Framework:** Next.js 15
-- **UI:** Radix UI + Tailwind CSS
-- **State Management:** React Context
-- **Charts:** Recharts
-- **Forms:** React Hook Form + Zod
-- **Icons:** Lucide React
+✅ User Authentication (Login/Register)
+✅ Browse and Filter Services
+✅ Create and Manage Bookings
+✅ Track Booking Status
+✅ Inventory Management Dashboard
+✅ Admin Dashboard
+✅ Payment Processing
+✅ Responsive Design
+✅ TypeScript Support
+✅ Clean REST API Backend
 
-## Development Notes
+## Quick Start
 
-- Customer and admin interfaces run on separate ports to avoid interference
-- Data is stored in localStorage for demo purposes
-- Authentication is mock-based for demonstration
-- Admin password: `admin123`
+### Prerequisites
+
+- Node.js 16+
+- npm or yarn installed
+
+### Running the Backend
+
+Open **Terminal 1**:
+
+\`\`\`bash
+cd backend
+npm install
+node server.js
+\`\`\`
+
+Backend will start on `http://localhost:5000`
+
+### Running the Frontend
+
+Open **Terminal 2**:
+
+\`\`\`bash
+cd frontend
+npm install
+npm run dev
+\`\`\`
+
+Frontend will start on `http://localhost:3000`
+
+## Tech Stack
+
+### Frontend
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Lucide Icons
+
+### Backend
+- Express.js
+- Node.js
+- UUID for unique IDs
+- CORS for cross-origin requests
+- dotenv for configuration
+
+## Demo Credentials
+
+**Admin Account:**
+- Email: `admin@trixtech.com`
+- Password: `admin123`
+
+**Demo Customer:**
+- Email: `user@example.com`
+- Password: `user123`
+
+## API Endpoints
+
+### Bookings
+- `GET /api/bookings` - Get all bookings
+- `POST /api/bookings` - Create new booking
+- `PUT /api/bookings/:id` - Update booking
+- `DELETE /api/bookings/:id` - Delete booking
+
+### Services
+- `GET /api/services` - Get all services
+- `GET /api/services/:id` - Get service by ID
+- `GET /api/services/category/:category` - Get services by category
+
+### Inventory
+- `GET /api/inventory` - Get all items
+- `POST /api/inventory` - Create item
+- `PUT /api/inventory/:id` - Update item
+- `DELETE /api/inventory/:id` - Delete item
+
+### Authentication
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user
+
+### Payments
+- `GET /api/payments` - Get all payments
+- `POST /api/payments` - Create payment
+
+## Environment Variables
+
+### Frontend (.env.local)
+\`\`\`
+NEXT_PUBLIC_API_URL=http://localhost:5000
+\`\`\`
+
+### Backend (.env)
+\`\`\`
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+\`\`\`
+
+## Available Commands
+
+### Frontend
+\`\`\`bash
+cd frontend
+
+npm run dev      # Start development server (Port 3000)
+npm run build    # Build for production
+npm start        # Start production server
+npm run lint     # Run ESLint
+\`\`\`
+
+### Backend
+\`\`\`bash
+cd backend
+
+node server.js   # Start production server
+npm run dev      # Start with auto-reload (requires nodemon)
+\`\`\`
+
+## Health Check
+
+\`\`\`bash
+curl http://localhost:5000/health
+\`\`\`
+
+Response:
+\`\`\`json
+{ "status": "Backend is running" }
+\`\`\`
+
+## Troubleshooting
+
+**Port already in use:**
+- Backend: Change `PORT` in `backend/.env`
+- Frontend: Modify the dev script in `frontend/package.json`
+
+**API connection issues:**
+- Ensure backend is running on port 5000
+- Check `NEXT_PUBLIC_API_URL` in frontend `.env.local`
+- Verify CORS settings in `backend/server.js`
+
+**Data persistence:**
+- Backend uses in-memory storage (data resets on restart)
+- Frontend uses localStorage for client-side data
+- For production, integrate with a real database
+
+## Development Workflow
+
+1. **Start Backend** - Run `node server.js` in the backend folder
+2. **Start Frontend** - Run `npm run dev` in the frontend folder
+3. **Access App** - Open `http://localhost:3000` in your browser
+4. **Test API** - Visit `http://localhost:5000/health` to verify backend
+
+## Future Enhancements
+
+- [ ] Real database integration (MongoDB/PostgreSQL)
+- [ ] JWT-based authentication with token refresh
+- [ ] Email notifications
+- [ ] Real payment gateway integration (Stripe)
+- [ ] Advanced analytics and reporting
+- [ ] Customer reviews and ratings
+- [ ] Calendar availability system
+- [ ] Real-time notifications
+- [ ] Mobile app (Flutter)
+- [ ] Automated testing suite
+
+## Technologies
+
+- **Framework:** Next.js 14, Express.js
+- **Language:** TypeScript, JavaScript
+- **UI:** Radix UI, Tailwind CSS, Lucide Icons
+- **State:** React Context, localStorage
+- **API:** REST with Express
 
 ## License
 
-This project is for demonstration purposes.
+All rights reserved © 2025 TRIXTECH
+
+## Support
+
+For issues or questions, please refer to the individual README files in the frontend and backend folders for more detailed information.
