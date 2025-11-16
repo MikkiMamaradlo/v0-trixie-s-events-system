@@ -1,65 +1,81 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
-
-// In-memory storage (replace with database in production)
-let bookings = [];
+const Booking = require('../models/Booking');
 
 // GET all bookings
-router.get('/', (req, res) => {
-  res.json(bookings);
+router.get('/', async (req, res) => {
+  try {
+    const bookings = await Booking.find().populate('serviceId userId');
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // GET booking by ID
-router.get('/:id', (req, res) => {
-  const booking = bookings.find(b => b.id === req.params.id);
-  if (!booking) {
-    return res.status(404).json({ error: 'Booking not found' });
+router.get('/:id', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('serviceId userId');
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    res.json(booking);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(booking);
 });
 
 // POST create new booking
-router.post('/', (req, res) => {
-  const { serviceId, userId, date, guestCount, totalPrice } = req.body;
+router.post('/', async (req, res) => {
+  try {
+    const { serviceId, userId, date, guestCount, totalPrice } = req.body;
 
-  if (!serviceId || !userId || !date) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    if (!serviceId || !userId || !date) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const newBooking = new Booking({
+      serviceId,
+      userId,
+      date,
+      guestCount,
+      totalPrice,
+      status: 'pending',
+    });
+
+    await newBooking.save();
+    res.status(201).json(newBooking);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  const newBooking = {
-    id: uuidv4(),
-    serviceId,
-    userId,
-    date,
-    guestCount,
-    totalPrice,
-    status: 'pending',
-    createdAt: new Date().toISOString(),
-  };
-
-  bookings.push(newBooking);
-  res.status(201).json(newBooking);
 });
 
 // PUT update booking status
-router.put('/:id', (req, res) => {
-  const booking = bookings.find(b => b.id === req.params.id);
-  if (!booking) {
-    return res.status(404).json({ error: 'Booking not found' });
+router.put('/:id', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    booking.status = req.body.status || booking.status;
+    booking.updatedAt = new Date();
+
+    await booking.save();
+    res.json(booking);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  const { status } = req.body;
-  booking.status = status || booking.status;
-  booking.updatedAt = new Date().toISOString();
-
-  res.json(booking);
 });
 
 // DELETE booking
-router.delete('/:id', (req, res) => {
-  bookings = bookings.filter(b => b.id !== req.params.id);
-  res.json({ message: 'Booking deleted' });
+router.delete('/:id', async (req, res) => {
+  try {
+    await Booking.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Booking deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

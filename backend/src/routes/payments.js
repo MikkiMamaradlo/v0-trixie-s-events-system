@@ -1,35 +1,39 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
-
-// In-memory storage
-let payments = [];
+const Payment = require('../models/Payment');
 
 // GET all payments
-router.get('/', (req, res) => {
-  res.json(payments);
+router.get('/', async (req, res) => {
+  try {
+    const payments = await Payment.find().populate('bookingId userId');
+    res.json(payments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // POST create payment
-router.post('/', (req, res) => {
-  const { bookingId, userId, amount, method } = req.body;
+router.post('/', async (req, res) => {
+  try {
+    const { bookingId, userId, amount, method } = req.body;
 
-  if (!bookingId || !userId || !amount || !method) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    if (!bookingId || !userId || !amount || !method) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const payment = new Payment({
+      bookingId,
+      userId,
+      amount,
+      method,
+      status: 'completed',
+    });
+
+    await payment.save();
+    res.status(201).json(payment);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  const payment = {
-    id: uuidv4(),
-    bookingId,
-    userId,
-    amount,
-    method,
-    status: 'completed',
-    createdAt: new Date().toISOString(),
-  };
-
-  payments.push(payment);
-  res.status(201).json(payment);
 });
 
 module.exports = router;
